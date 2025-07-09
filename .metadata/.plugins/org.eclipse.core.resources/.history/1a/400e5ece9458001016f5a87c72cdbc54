@@ -1,0 +1,190 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="f" uri="http://java.sun.com/jsf/core" %>
+<%@ taglib prefix="h" uri="http://java.sun.com/jsf/html" %>
+
+<f:view>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Subscribed Family Members</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f2f8fc;
+            margin: 0;
+            padding: 20px;
+        }
+        h2 {
+            text-align: center;
+            color: #005b96;
+            margin-bottom: 20px;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+        .data-table th, .data-table td {
+            padding: 10px;
+            border: 1px solid #cce0ff;
+            text-align: left;
+        }
+        .data-table th {
+            background-color: #dbeeff;
+            color: #003366;
+        }
+        .data-table tr:nth-child(even) {
+            background-color: #f3faff;
+        }
+        .data-table tr:hover {
+            background-color: #e6f7ff;
+        }
+        .back-button {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            align-items: center;
+        }
+        .pagination-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .page-size-selector {
+            margin-left: 20px;
+        }
+        .page-info {
+            margin: 0 15px;
+            font-weight: bold;
+            color: #005b96;
+        }
+        .disabled-button {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Subscribed Family Members</h2>
+
+<h:form>
+    <!-- Page size selector -->
+    <div class="pagination-container">
+        <div class="pagination-controls">
+            <h:commandButton value="First" action="#{providerController.firstPage}" 
+                disabled="#{providerController.currentPage == 1}" 
+                styleClass="#{providerController.currentPage == 1 ? 'disabled-button' : ''}"/>
+                
+            <h:commandButton value="Previous" action="#{providerController.previousPage}" 
+                disabled="#{providerController.currentPage == 1}" 
+                styleClass="#{providerController.currentPage == 1 ? 'disabled-button' : ''}"/>
+                
+            <span class="page-info">
+                Page #{providerController.currentPage} of #{providerController.totalPages}
+            </span>
+            
+            <h:commandButton value="Next" action="#{providerController.nextPage}" 
+                disabled="#{providerController.currentPage == providerController.totalPages}" 
+                styleClass="#{providerController.currentPage == providerController.totalPages ? 'disabled-button' : ''}"/>
+                
+            <h:commandButton value="Last" action="#{providerController.lastPage}" 
+                disabled="#{providerController.currentPage == providerController.totalPages}" 
+                styleClass="#{providerController.currentPage == providerController.totalPages ? 'disabled-button' : ''}"/>
+        </div>
+        
+        <div class="page-size-selector">
+            <h:outputText value="Items per page: "/>
+            <h:selectOneMenu value="#{providerController.pageSize}" onchange="this.form.submit()">
+                <f:selectItem itemValue="5" itemLabel="5"/>
+                <f:selectItem itemValue="10" itemLabel="10"/>
+                <f:selectItem itemValue="20" itemLabel="20"/>
+                <f:selectItem itemValue="50" itemLabel="50"/>
+            </h:selectOneMenu>
+        </div>
+    </div>
+
+    <h:dataTable value="#{providerController.paginatedSubscribedMembers}" var="member" styleClass="data-table">
+        <h:column>
+            <f:facet name="header">
+                <h:commandLink value="Member ID" action="#{providerController.sortBy('members', 'memberId')}" />
+            </f:facet>
+            <h:outputText value="#{member.memberId}" />
+        </h:column>
+
+        <h:column>
+            <f:facet name="header">
+                <h:commandLink value="Full Name" action="#{providerController.sortBy('members', 'fullName')}" />
+            </f:facet>
+            <h:outputText value="#{member.fullName}" />
+        </h:column>
+
+        <h:column>
+            <f:facet name="header">
+                <h:commandLink value="Age" action="#{providerController.sortBy('members', 'age')}" />
+            </f:facet>
+            <h:outputText value="#{member.age}" />
+        </h:column>
+
+        <h:column>
+            <f:facet name="header">
+                <h:commandLink value="Gender" action="#{providerController.sortBy('members', 'gender')}" />
+            </f:facet>
+            <h:outputText value="#{member.gender}" />
+        </h:column>
+
+        <h:column>
+            <f:facet name="header">
+                <h:commandLink value="Relation" action="#{providerController.sortBy('members', 'relationWithProposer')}" />
+            </f:facet>
+            <h:outputText value="#{member.relationWithProposer}" />
+        </h:column>
+
+        <h:column>
+            <f:facet name="header">
+                <h:commandLink value="Aadhar No" action="#{providerController.sortBy('members', 'aadharNo')}" />
+            </f:facet>
+            <h:outputText value="#{member.aadharNo}" />
+        </h:column>
+    </h:dataTable>
+
+    <!-- Pagination controls at bottom -->
+    <div class="pagination-container">
+        <div class="pagination-controls">
+            <h:commandButton value="First" action="#{providerController.firstPage}" 
+                disabled="#{providerController.currentPage == 1}" 
+                styleClass="#{providerController.currentPage == 1 ? 'disabled-button' : ''}"/>
+                
+            <h:commandButton value="Previous" action="#{providerController.previousPage}" 
+                disabled="#{providerController.currentPage == 1}" 
+                styleClass="#{providerController.currentPage == 1 ? 'disabled-button' : ''}"/>
+                
+            <span class="page-info">
+                Page #{providerController.currentPage} of #{providerController.totalPages}
+            </span>
+            
+            <h:commandButton value="Next" action="#{providerController.nextPage}" 
+                disabled="#{providerController.currentPage == providerController.totalPages}" 
+                styleClass="#{providerController.currentPage == providerController.totalPages ? 'disabled-button' : ''}"/>
+                
+            <h:commandButton value="Last" action="#{providerController.lastPage}" 
+                disabled="#{providerController.currentPage == providerController.totalPages}" 
+                styleClass="#{providerController.currentPage == providerController.totalPages ? 'disabled-button' : ''}"/>
+        </div>
+    </div>
+
+    <!-- Back Button -->
+    <div class="back-button">
+        <h:commandButton value="Back to Insurance Details" action="showInsuranceDetails" />
+    </div>
+</h:form>
+
+</body>
+</html>
+</f:view>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+    <fullyQualifiedTypeName name="com.java.ejb.provider.daoImpl.ProviderDaoImpl"/>
+    <fullyQualifiedTypeName name="com.java.ejb.provider.model.Prescription"/>
+    <fullyQualifiedTypeName name="java.io.Serializable"/>
+    <fullyQualifiedTypeName name="com.java.ejb.provider.model.PrescribedMedicines"/>
+    <fullyQualifiedTypeName name="com.java.jsf.provider.model.Appointment"/>
+    <fullyQualifiedTypeName name="com.java.jsf.util.Converter"/>
+    <fullyQualifiedTypeName name="com.java.jsf.recipient.model.Recipient"/>
+    <fullyQualifiedTypeName name="com.java.jsf.provider.daoImpl.InsuranceDaoImpl"/>
+    <fullyQualifiedTypeName name="com.java.jsf.provider.model.PatientInsuranceDetails"/>
+    <fullyQualifiedTypeName name="com.java.ejb.provider.model.MedicalProcedure"/>
+    <fullyQualifiedTypeName name="com.java.jsf.provider.daoImpl.ProviderDaoImpl"/>
+    <fullyQualifiedTypeName name="com.java.jsf.provider.model.ProcedureDailyLog"/>
+    <fullyQualifiedTypeName name="com.java.ejb.provider.model.ProcedureType"/>
+</qualifiedTypeNameHistroy>

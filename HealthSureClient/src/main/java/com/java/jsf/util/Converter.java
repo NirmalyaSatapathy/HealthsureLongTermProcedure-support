@@ -1,0 +1,103 @@
+package com.java.jsf.util;
+
+import com.java.ejb.provider.model.Appointment;
+import com.java.ejb.provider.model.Doctor;
+import com.java.ejb.provider.model.DoctorAvailability;
+import com.java.ejb.provider.model.MedicalProcedure;
+import com.java.ejb.provider.model.Provider;
+import com.java.ejb.recipient.model.Recipient;
+import com.java.jsf.provider.model.ProcedureStatus;
+
+public class Converter {
+	public static Appointment convertToEJBAppointment(com.java.jsf.provider.model.Appointment jsfAppointment) {
+	    if (jsfAppointment == null) return null;
+	    Appointment ejbAppointment = new Appointment();
+	    ejbAppointment.setAppointmentId(jsfAppointment.getAppointmentId());
+	    ejbAppointment.setDoctor(convertToEJBDoctor(jsfAppointment.getDoctor()));
+	    ejbAppointment.setRecipient(convertToEJBRecipient(jsfAppointment.getRecipient()));
+	    ejbAppointment.setProvider(convertToEJBProvider(jsfAppointment.getProvider()));
+	    if (jsfAppointment.getAvailability() != null) {
+	        DoctorAvailability availability = new DoctorAvailability();
+	        availability.setAvailabilityId(jsfAppointment.getAvailability().getAvailabilityId());
+	        ejbAppointment.setAvailability(availability);
+	    }
+	    return ejbAppointment;
+	}
+	public static com.java.ejb.provider.model.Doctor convertToEJBDoctor(
+	        com.java.jsf.provider.model.Doctor jsfDoctor) {
+	    if (jsfDoctor == null || jsfDoctor.getDoctorId() == null) return null;
+
+	    com.java.ejb.provider.model.Doctor ejbDoctor = new com.java.ejb.provider.model.Doctor();
+	    ejbDoctor.setDoctorId(jsfDoctor.getDoctorId());
+	    return ejbDoctor;
+	}
+	public static com.java.ejb.provider.model.Provider convertToEJBProvider(
+	        com.java.jsf.provider.model.Provider jsfProvider) {
+	    if (jsfProvider == null || jsfProvider.getProviderId() == null) return null;
+
+	    com.java.ejb.provider.model.Provider ejbProvider = new com.java.ejb.provider.model.Provider();
+	    ejbProvider.setProviderId(jsfProvider.getProviderId());
+	    return ejbProvider;
+	}
+	public static com.java.ejb.recipient.model.Recipient convertToEJBRecipient(
+	        com.java.jsf.recipient.model.Recipient jsfRecipient) {
+
+	    if (jsfRecipient == null || jsfRecipient.gethId() == null) return null;
+
+	    com.java.ejb.recipient.model.Recipient ejbRecipient = new com.java.ejb.recipient.model.Recipient();
+
+	    ejbRecipient.sethId(jsfRecipient.gethId());
+	    ejbRecipient.setFirstName(jsfRecipient.getFirstName());
+	    ejbRecipient.setLastName(jsfRecipient.getLastName());
+	    ejbRecipient.setMobile(jsfRecipient.getMobile());
+	    ejbRecipient.setUserName(jsfRecipient.getUserName());
+	    ejbRecipient.setDob(jsfRecipient.getDob());
+	    ejbRecipient.setAddress(jsfRecipient.getAddress());
+	    ejbRecipient.setCreatedAt(jsfRecipient.getCreatedAt());
+	    ejbRecipient.setPassword(jsfRecipient.getPassword());
+	    ejbRecipient.setEmail(jsfRecipient.getEmail());
+	    ejbRecipient.setGender(
+	    	    jsfRecipient.getGender() != null 
+	    	    ? com.java.ejb.recipient.model.Gender.valueOf(jsfRecipient.getGender().name()) 
+	    	    : null
+	    	);
+
+	    	ejbRecipient.setStatus(
+	    	    jsfRecipient.getStatus() != null 
+	    	    ? com.java.ejb.recipient.model.Status.valueOf(jsfRecipient.getStatus().name()) 
+	    	    : null
+	    	);
+
+	    ejbRecipient.setLoginAttempts(jsfRecipient.getLoginAttempts());
+	    ejbRecipient.setLockedUntil(jsfRecipient.getLockedUntil());
+	    ejbRecipient.setLastLogin(jsfRecipient.getLastLogin());
+	    ejbRecipient.setPasswordUpdatedAt(jsfRecipient.getPasswordUpdatedAt());
+
+	    return ejbRecipient;
+	}
+	public static MedicalProcedure convertToEJBProcedure(com.java.jsf.provider.model.MedicalProcedure jsfProcedure) {
+	    if (jsfProcedure == null) return null;
+
+	    MedicalProcedure ejbProcedure = new MedicalProcedure();
+
+	    // Basic fields
+	    ejbProcedure.setProcedureId(jsfProcedure.getProcedureId());
+	    ejbProcedure.setScheduledDate(jsfProcedure.getScheduledDate());
+	    ejbProcedure.setProcedureDate(jsfProcedure.getProcedureDate());
+	    ejbProcedure.setFromDate(jsfProcedure.getFromDate());
+	    ejbProcedure.setToDate(jsfProcedure.getToDate());
+	    ejbProcedure.setDiagnosis(jsfProcedure.getDiagnosis());
+	    ejbProcedure.setRecommendations(jsfProcedure.getRecommendations());
+	    ejbProcedure.setProcedureStatus(
+	    	    com.java.ejb.provider.model.ProcedureStatus.valueOf(jsfProcedure.getProcedureStatus().name())
+	    	);
+
+	    ejbProcedure.setCreatedAt(jsfProcedure.getCreatedAt());
+	    // NOTE: Claims and Prescriptions are typically not transferred from JSF to EJB during creation,
+	    // but if needed, you can copy them here as well using separate converters.
+
+	    return ejbProcedure;
+	}
+
+
+}

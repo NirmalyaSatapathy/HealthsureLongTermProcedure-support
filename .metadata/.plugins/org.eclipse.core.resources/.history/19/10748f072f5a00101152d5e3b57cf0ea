@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faces-config xmlns="http://java.sun.com/xml/ns/javaee" 
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee /WEB-INF/schema/web-facesconfig_2_0.xsd" 
+              version="2.0" metadata-complete="false">
+    <!-- This file must be present with our jar, even if it is empty.  Otherwise, our Java annotations won't get scanned! -->
+    <managed-bean>
+	<managed-bean-name>appointment</managed-bean-name>
+    <managed-bean-class>com.java.ejb.provider.model.Appointment</managed-bean-class>
+    <managed-bean-scope>session</managed-bean-scope>
+</managed-bean>
+ <managed-bean>
+	<managed-bean-name>doctor</managed-bean-name>
+    <managed-bean-class>com.java.ejb.provider.model.Doctor</managed-bean-class>
+    <managed-bean-scope>session</managed-bean-scope>
+</managed-bean>
+ <managed-bean>
+	<managed-bean-name>provider</managed-bean-name>
+    <managed-bean-class>com.java.ejb.provider.model.Provider</managed-bean-class>
+    <managed-bean-scope>session</managed-bean-scope>
+</managed-bean>
+ <managed-bean>
+	<managed-bean-name>recipient</managed-bean-name>
+    <managed-bean-class>com.java.ejb.recipient.model.Recipient</managed-bean-class>
+    <managed-bean-scope>session</managed-bean-scope>
+</managed-bean>
+    <managed-bean>
+	<managed-bean-name>providerEjb</managed-bean-name>
+    <managed-bean-class>com.java.ejb.provider.bean.ProviderEjbImpl</managed-bean-class>
+    <managed-bean-scope>session</managed-bean-scope>
+</managed-bean>
+<managed-bean>
+	<managed-bean-name>medicalProcedure</managed-bean-name>
+    <managed-bean-class>com.java.ejb.provider.model.MedicalProcedure</managed-bean-class>
+    <managed-bean-scope>session</managed-bean-scope>
+</managed-bean>
+<managed-bean>
+	<managed-bean-name>prescription</managed-bean-name>
+    <managed-bean-class>com.java.ejb.provider.model.Prescription</managed-bean-class>
+    <managed-bean-scope>session</managed-bean-scope>
+</managed-bean>
+<managed-bean>
+	<managed-bean-name>prescribedMedicine</managed-bean-name>
+    <managed-bean-class>com.java.ejb.provider.model.PrescribedMedicines</managed-bean-class>
+    <managed-bean-scope>session</managed-bean-scope>
+</managed-bean>
+<managed-bean>
+	<managed-bean-name>procedureTest</managed-bean-name>
+    <managed-bean-class>com.java.ejb.provider.model.ProcedureTest</managed-bean-class>
+    <managed-bean-scope>session</managed-bean-scope>
+</managed-bean>
+ <managed-bean>
+        <managed-bean-name>providerDao</managed-bean-name>
+        <managed-bean-class>com.java.jsf.provider.daoImpl.ProviderDaoImpl</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+    </managed-bean>
+<managed-bean>
+	<managed-bean-name>insuranceDaoImpl</managed-bean-name>
+    <managed-bean-class>com.java.jsf.provider.daoImpl.InsuranceDaoImpl</managed-bean-class>
+    <managed-bean-scope>session</managed-bean-scope>
+</managed-bean>
+<managed-bean>
+<managed-bean-name>providerController</managed-bean-name>
+    <managed-bean-class>com.java.jsf.provider.controller.ProcedureController</managed-bean-class>
+    <managed-bean-scope>session</managed-bean-scope>
+    <managed-property>
+            <property-name>providerEjb</property-name>
+            <property-class>com.java.ejb.provider.bean.ProviderEjbImpl</property-class>
+            <value>#{providerEjb}</value>
+    </managed-property>
+    <managed-property>
+    <property-name>procedure</property-name>
+    <property-class>com.java.ejb.provider.model.MedicalProcedure</property-class>
+    <value>#{medicalProcedure}</value>
+</managed-property>
+     <managed-property>
+            <property-name>insuranceDaoImpl</property-name>
+            <property-class>com.java.jsf.provider.daoImpl.InsuranceDaoImpl</property-class>
+            <value>#{insuranceDaoImpl}</value>
+    </managed-property>
+     <managed-property>
+            <property-name>prescription</property-name>
+            <property-class>com.java.ejb.provider.model.Prescription</property-class>
+            <value>#{prescription}</value>
+    </managed-property>
+     <managed-property>
+            <property-name>prescribedMedicines</property-name>
+            <property-class>com.java.ejb.provider.model.PrescribedMedicines</property-class>
+            <value>#{prescribedMedicine}</value>
+    </managed-property>
+     <managed-property>
+            <property-name>prescribedMedicines</property-name>
+            <property-class>com.java.ejb.provider.model.PrescribedMedicines</property-class>
+            <value>#{prescribedMedicine}</value>
+    </managed-property>
+</managed-bean>
+ <managed-bean>
+        <managed-bean-name>insuranceController</managed-bean-name>
+        <managed-bean-class>com.java.jsf.provider.controller.InsuranceController</managed-bean-class>
+        <managed-bean-scope>session</managed-bean-scope>
+        <managed-property>
+            <property-name>insuranceDaoImpl</property-name>
+            <property-class>com.java.jsf.provider.daoImpl.InsuranceDaoImpl</property-class>
+            <value>#{insuranceDaoImpl}</value>
+        </managed-property>
+        <managed-property>
+            <property-name>providerDao</property-name>
+            <property-class>com.java.jsf.provider.daoImpl.ProviderDaoImpl</property-class>
+            <value>#{providerDao}</value>
+        </managed-property>
+    </managed-bean>
+</faces-config>

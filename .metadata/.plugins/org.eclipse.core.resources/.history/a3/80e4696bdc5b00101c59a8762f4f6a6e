@@ -1,0 +1,263 @@
+package com.java.jsf.provider.daoImpl;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.AnnotationConfiguration;
+
+import com.java.ejb.provider.model.Appointment;
+import com.java.ejb.provider.model.Doctor;
+import com.java.ejb.provider.model.MedicalProcedure;
+import com.java.ejb.provider.model.Provider;
+import com.java.ejb.recipient.model.Recipient;
+import com.java.jsf.util.Converter;
+
+
+public class ProviderDaoImpl {
+	 static SessionFactory sessionFactory;
+	 static {
+		    try {
+		        sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
+		    } catch (Throwable ex) {
+		        System.err.println("🔥 Hibernate SessionFactory initialization failed.");
+		        ex.printStackTrace(); // <-- THIS WILL PRINT THE ACTUAL ROOT CAUSE
+		        throw new ExceptionInInitializerError(ex);
+		    }
+		}
+
+
+	  public Recipient searchRecipientByHealthId(String healthId) {
+	        Session session = sessionFactory.openSession();
+	        com.java.jsf.recipient.model.Recipient recipient=null;
+	        recipient= (com.java.jsf.recipient.model.Recipient) session.get(com.java.jsf.recipient.model.Recipient.class, healthId);
+	        session.close();
+	        return Converter.convertToEJBRecipient(recipient);
+	        }
+	    public Doctor searchDoctorById(String doctorId) {
+	        Session session = sessionFactory.openSession();
+	        com.java.jsf.provider.model.Doctor doctor=null;
+	        doctor=(com.java.jsf.provider.model.Doctor) session.get(com.java.jsf.provider.model.Doctor .class, doctorId);
+	        session.close();
+	       return Converter.convertToEJBDoctor(doctor);
+	    }
+	    public Provider searchProviderById(String providerId) {
+	        Session session = sessionFactory.openSession();
+	        com.java.jsf.provider.model.Provider provider=null;
+	        provider=( com.java.jsf.provider.model.Provider) session.get( com.java.jsf.provider.model.Provider.class, providerId);
+	        session.close();
+	        return Converter.convertToEJBProvider(provider);
+	    }
+	   public Appointment searchAppointmentById(String appointmentId) {
+	        Session session = sessionFactory.openSession();
+	        com.java.jsf.provider.model.Appointment appointment=null;
+	        appointment=(com.java.jsf.provider.model.Appointment) session.get(com.java.jsf.provider.model.Appointment.class, appointmentId);
+	        session.close();
+	        return Converter.convertToEJBAppointment(appointment);
+	    }
+	   public MedicalProcedure getProcedureById(String procedureId1) {
+	        Date startDate = null;
+	            Session session = sessionFactory.openSession();
+	            Transaction tx = session.beginTransaction();
+	            com.java.jsf.provider.model.MedicalProcedure procedure = (com.java.jsf.provider.model.MedicalProcedure) session.get(com.java.jsf.provider.model.MedicalProcedure.class, procedureId1);
+	            MedicalProcedure ejbProcedure=Converter.convertToEJBProcedure(procedure);
+	            tx.commit();
+	            session.close();
+	        return ejbProcedure;
+	    }
+	   public boolean isDoctorPatientAssociatedByAppointment( String doctorId, String hId) {
+		   String hql = "SELECT count(a) FROM Appointment a WHERE a.doctor.doctorId = :doctorId AND a.recipient.hId = :hId";
+		    Session session=sessionFactory.openSession();
+		    Long count = (Long) session.createQuery(hql)
+		                               .setParameter("doctorId", doctorId)
+		                               .setParameter("hId", hId)
+		                               .uniqueResult();
+		    return count != null && count > 0;
+		}
+	   public List<Recipient> getPatientListByDoctorId(String doctorId) {
+	       Session session = sessionFactory.openSession();
+	       Transaction tx = session.beginTransaction();
+	       
+	       String hql = "SELECT DISTINCT a.recipient FROM com.java.jsf.provider.model.Appointment a "
+	                  + "WHERE a.doctor.doctorId = :doctorId";
+
+	       List<com.java.jsf.recipient.model.Recipient> jsfRecipientList = session.createQuery(hql)
+	               .setParameter("doctorId", doctorId)
+	               .list();
+
+	       tx.commit();
+	       session.close();
+
+	       List<Recipient> ejbRecipientList = new ArrayList<Recipient>();
+	       for (com.java.jsf.recipient.model.Recipient jsfRecipient : jsfRecipientList) {
+	           ejbRecipientList.add(Converter.convertToEJBRecipient(jsfRecipient));
+	       }
+
+	       return ejbRecipientList;
+	   }
+	   public List<Recipient> searchPatientsByName(String doctorId, String name, String matchType) {
+		    Session session = sessionFactory.openSession();
+		    Transaction tx = session.beginTransaction();
+
+		    String hql = "";
+		    String namePattern = "";
+		    String cleanedName = name.toLowerCase().replaceAll("\\s+", "");
+
+		    switch (matchType.toLowerCase()) {
+		        case "startswith":
+		            namePattern = cleanedName + "%";
+		            hql = "SELECT DISTINCT a.recipient FROM Appointment a "
+		                + "WHERE a.doctor.doctorId = :doctorId AND "
+		                + "lower(replace(concat(a.recipient.firstName, a.recipient.lastName), ' ', '')) LIKE :name";
+		            break;
+
+		        case "contains":
+		            namePattern = "%" + cleanedName + "%";
+		            hql = "SELECT DISTINCT a.recipient FROM Appointment a "
+		                + "WHERE a.doctor.doctorId = :doctorId AND "
+		                + "lower(replace(concat(a.recipient.firstName, a.recipient.lastName), ' ', '')) LIKE :name";
+		            break;
+
+		        default:
+		            tx.commit();
+		            session.close();
+		            return Collections.emptyList(); // invalid match type
+		    }
+
+		    List<com.java.jsf.recipient.model.Recipient> jsfRecipientList = session.createQuery(hql)
+		            .setParameter("doctorId", doctorId)
+		            .setParameter("name", namePattern)
+		            .list();
+
+		    tx.commit();
+		    session.close();
+
+		    List<Recipient> ejbRecipientList = new ArrayList<>();
+		    for (com.java.jsf.recipient.model.Recipient jsfRecipient : jsfRecipientList) {
+		        ejbRecipientList.add(Converter.convertToEJBRecipient(jsfRecipient));
+		    }
+
+		    return ejbRecipientList;
+		}
+
+	   public List<Recipient> searchPatientsByExactName(String doctorId, String name) {
+		    Session session = sessionFactory.openSession();
+		    Transaction tx = session.beginTransaction();
+
+		    String cleanedName = name.toLowerCase().replaceAll("\\s+", "");
+
+		    String hql = "SELECT DISTINCT a.recipient FROM Appointment a "
+		               + "WHERE a.doctor.doctorId = :doctorId AND "
+		               + "lower(replace(concat(a.recipient.firstName, a.recipient.lastName), ' ', '')) = :name";
+
+		    List<com.java.jsf.recipient.model.Recipient> jsfRecipientList = session.createQuery(hql)
+		            .setParameter("doctorId", doctorId)
+		            .setParameter("name", cleanedName)
+		            .list();
+
+		    tx.commit();
+		    session.close();
+
+		    List<Recipient> ejbRecipientList = new ArrayList<>();
+		    for (com.java.jsf.recipient.model.Recipient jsfRecipient : jsfRecipientList) {
+		        ejbRecipientList.add(Converter.convertToEJBRecipient(jsfRecipient));
+		    }
+
+		    return ejbRecipientList;
+		}
+	   public List<Date> getPrescriptionDates(String prescriptionId) {
+		    List<Date> dates = new ArrayList<>();
+		    Session session = null;
+		    Transaction tx = null;
+
+		    try {
+		        session = sessionFactory.openSession();
+		        tx = session.beginTransaction();
+
+		        // HQL to get only startDate and endDate
+		        Object[] result = (Object[]) session.createQuery(
+		            "SELECT p.startDate, p.endDate FROM Prescription p WHERE p.prescriptionId = :id"
+		        )
+		        .setParameter("id", prescriptionId)
+		        .uniqueResult();
+
+		        if (result != null) {
+		            dates.add((Date) result[0]); // startDate
+		            dates.add((Date) result[1]); // endDate
+		        }
+
+		        tx.commit();
+		    } catch (Exception e) {
+		        if (tx != null) tx.rollback();
+		        e.printStackTrace();
+		    } finally {
+		        if (session != null) session.close();
+		    }
+
+		    return dates;
+		}
+	   public List<String> getMedicineNamesByPrescriptionId(String prescriptionId) {
+		    List<String> medicineNames = new ArrayList<>();
+		    Session session = null;
+		    Transaction tx = null;
+
+		    try {
+		        session = sessionFactory.openSession();
+		        tx = session.beginTransaction();
+
+		        // HQL to fetch only medicine names
+		        List<String> result = session.createQuery(
+		            "SELECT pm.medicineName FROM PrescribedMedicines pm WHERE pm.prescription.prescriptionId = :prescriptionId"
+		        )
+		        .setParameter("prescriptionId", prescriptionId)
+		        .list();
+
+		        if (result != null) {
+		            medicineNames.addAll(result);
+		        }
+
+		        tx.commit();
+		    } catch (Exception e) {
+		        if (tx != null) tx.rollback();
+		        e.printStackTrace();
+		    } finally {
+		        if (session != null) session.close();
+		    }
+		    System.out.println(medicineNames);
+		    return medicineNames;
+		}
+	   public Date getPrescriptionWrittenOnDate(String prescriptionId) {
+		    Session session = sessionFactory.openSession();
+		    Date result = null;
+		    try {
+		        result = (Date) session.createQuery("SELECT p.writtenOn FROM Prescription p WHERE p.prescriptionId = :id")
+		                .setParameter("id", prescriptionId)
+		                .uniqueResult();
+		    } finally {
+		        session.close();
+		    }
+		    return result;
+		}
+
+		public Date getProcedureEndDate(String procedureId) {
+		    Session session = sessionFactory.openSession();
+		    Date result = null;
+		    try {
+		        result = (Date) session.createQuery("SELECT p.toDate FROM MedicalProcedure p WHERE p.procedureId = :id")
+		                .setParameter("id", procedureId)
+		                .uniqueResult();
+		    } finally {
+		        session.close();
+		    }
+		    return result;
+		}
+
+
+
+
+	   
+}

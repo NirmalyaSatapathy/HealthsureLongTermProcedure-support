@@ -1,0 +1,311 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="f" uri="http://java.sun.com/jsf/core" %>
+<%@ taglib prefix="h" uri="http://java.sun.com/jsf/html" %>
+
+<f:view>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Patient Insurance Details</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fcff;
+            color: #003366;
+            margin: 0;
+            padding: 20px;
+        }
+        h2 {
+            color: #0077b6;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .data-table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        .data-table th, .data-table td {
+            border: 1px solid #bcd9ea;
+            padding: 10px;
+            text-align: left;
+        }
+        .data-table th {
+            background-color: #d0f0f3;
+            color: #003c58;
+        }
+        .data-table tr:nth-child(even) {
+            background-color: #f1faff;
+        }
+        .data-table tr:hover {
+            background-color: #e0f7ff;
+        }
+        .error-message {
+            color: red;
+            font-size: 0.9em;
+            display: block;
+            margin-top: 2px;
+        }
+    </style>
+</head>
+<body>
+<h2>Patient insurance details</h2>
+
+<h:form prependId="false">
+    <h:panelGrid columns="2" cellpadding="5">
+
+        <!-- Doctor ID -->
+        <h:outputLabel for="doctorId" escape="false" value="Enter Doctor ID: <span style='color:red;'>*</span>" />
+        <h:panelGroup layout="block">
+            <h:inputText id="doctorId" value="#{insuranceController.doctorId}" />
+            <h:message for="doctorId" styleClass="error-message" />
+        </h:panelGroup>
+
+        <!-- Patient ID -->
+        <h:outputLabel for="recipientId" value="Enter Patient ID (optional):" />
+        <h:panelGroup layout="block">
+            <h:inputText id="recipientId" value="#{insuranceController.healthId}" />
+            <h:message for="recipientId" styleClass="error-message" />
+        </h:panelGroup>
+
+        <!-- Patient Name -->
+        <h:outputLabel for="patientName" value="Patient Name (optional):" />
+        <h:panelGroup layout="block">
+            <h:inputText id="patientName" value="#{insuranceController.patientName}" />
+            <h:message for="patientName" styleClass="error-message" />
+        </h:panelGroup>
+        <h:panelGroup layout="block">
+            <h:selectOneRadio id="matchType" value="#{insuranceController.matchType}" layout="lineDirection">
+                <f:selectItem itemLabel="Starts With" itemValue="startsWith" />
+                <f:selectItem itemLabel="Contains" itemValue="contains" />
+            </h:selectOneRadio>
+            <h:message for="matchType" styleClass="error-message" />
+        </h:panelGroup>
+
+        <!-- Submit Button -->
+        <h:outputLabel />
+        <h:commandButton value="Search" action="#{insuranceController.handleSearch()}" />
+
+    </h:panelGrid>
+</h:form>
+
+
+    <h:commandButton value="Reset" action="#{insuranceController.resetPage()}" immediate="true" />
+
+
+<!-- ASSOCIATED PATIENTS TABLE -->
+<h:panelGroup rendered="#{insuranceController.showPatientsFlag}">
+    <h:form>
+    <h:outputText value="Total Associated Patients: #{insuranceController.associatedPatients.size()}" style="font-weight: bold; margin-top: 10px; display: block;" />
+        <h:dataTable value="#{insuranceController.getPaginatedAssociatedPatients()}" var="patient" styleClass="data-table">
+            <h:column>
+                <f:facet name="header">
+                    <h:commandLink value="Health Id#{insuranceController.sortField eq 'hId' ? (insuranceController.ascending ? ' ↑' : ' ↓') : ''}"
+                                   action="#{insuranceController.sortBy('patients', 'hId')}" />
+                </f:facet>
+                <h:outputText value="#{patient.hId}" />
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:commandLink value="User Name#{insuranceController.sortField eq 'userName' ? (insuranceController.ascending ? ' ↑' : ' ↓') : ''}"
+                                   action="#{insuranceController.sortBy('patients', 'userName')}" />
+                </f:facet>
+                <h:outputText value="#{patient.userName}" />
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:commandLink value="First Name#{insuranceController.sortField eq 'firstName' ? (insuranceController.ascending ? ' ↑' : ' ↓') : ''}"
+                                   action="#{insuranceController.sortBy('patients', 'firstName')}" />
+                </f:facet>
+                <h:outputText value="#{patient.firstName}" />
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:commandLink value="Last Name#{insuranceController.sortField eq 'lastName' ? (insuranceController.ascending ? ' ↑' : ' ↓') : ''}"
+                                   action="#{insuranceController.sortBy('patients', 'lastName')}" />
+                </f:facet>
+                <h:outputText value="#{patient.lastName}" />
+            </h:column>
+            <h:column>
+                <f:facet name="header"><h:outputText value="Show Insurance" /></f:facet>
+                <h:commandButton value="Show Insurance" action="#{insuranceController.showInsuranceForPatient(patient.hId)}" />
+            </h:column>
+        </h:dataTable>
+
+
+       <!-- Pagination Controls -->
+<h:panelGroup layout="block" style="margin-top: 10px;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <!-- Left side buttons -->
+        <div>
+            <h:commandButton value="First" action="#{insuranceController.setPatientFirst(0)}"
+                             disabled="#{insuranceController.patientFirst == 0}" />
+            <h:commandButton value="Previous" action="#{insuranceController.previousPatientPage()}"
+                             disabled="#{insuranceController.patientFirst == 0}" />
+        </div>
+
+        <!-- Center page text -->
+        <div>
+            <h:outputText value="Page #{insuranceController.associatedPatientsCurrentPage} of #{insuranceController.associatedPatientsTotalPages}" />
+        </div>
+
+        <!-- Right side buttons -->
+        <div>
+            <h:commandButton value="Next" action="#{insuranceController.nextPatientPage()}"
+                             disabled="#{!insuranceController.isPatientHasNextPage()}" />
+            <h:commandButton value="Last"
+                             action="#{insuranceController.setPatientFirst(insuranceController.associatedPatients.size() - (insuranceController.associatedPatients.size() mod insuranceController.patientPageSize))}"
+                             disabled="#{!insuranceController.isPatientHasNextPage()}" />
+        </div>
+    </div>
+</h:panelGroup>
+
+
+    </h:form>
+</h:panelGroup>
+
+<!-- PATIENT INSURANCE TABLE -->
+<h:panelGroup rendered="#{insuranceController.showInsuranceFlag}">
+    <h:form>
+    <h:outputText value="Total Insurance Records: #{insuranceController.patientInsuranceList.size()}" style="font-weight: bold; margin-top: 10px; display: block;" />
+        <h:dataTable value="#{insuranceController.getPaginatedInsuranceList()}" var="insurance" styleClass="data-table">
+            <h:column>
+                <f:facet name="header">
+                    <h:commandLink value="Patient Name#{insuranceController.sortField eq 'patientName' ? (insuranceController.ascending ? ' ↑' : ' ↓') : ''}"
+                                   action="#{insuranceController.sortBy('insurance', 'patientName')}" />
+                </f:facet>
+                <h:outputText value="#{insurance.patientName}" />
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:commandLink value="Company Name#{insuranceController.sortField eq 'companyName' ? (insuranceController.ascending ? ' ↑' : ' ↓') : ''}"
+                                   action="#{insuranceController.sortBy('insurance', 'companyName')}" />
+                </f:facet>
+                <h:outputText value="#{insurance.companyName}" />
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:commandLink value="Plan Name#{insuranceController.sortField eq 'planName' ? (insuranceController.ascending ? ' ↑' : ' ↓') : ''}"
+                                   action="#{insuranceController.sortBy('insurance', 'planName')}" />
+                </f:facet>
+                <h:outputText value="#{insurance.planName}" />
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:commandLink value="Enrollment Date#{insuranceController.sortField eq 'enrollmentDate' ? (insuranceController.ascending ? ' ↑' : ' ↓') : ''}"
+                                   action="#{insuranceController.sortBy('insurance', 'enrollmentDate')}" />
+                </f:facet>
+                <h:outputText value="#{insurance.enrollmentDate}">
+                    <f:convertDateTime pattern="yyyy-MM-dd" />
+                </h:outputText>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:commandLink value="Coverage Start#{insuranceController.sortField eq 'coverageStartDate' ? (insuranceController.ascending ? ' ↑' : ' ↓') : ''}"
+                                   action="#{insuranceController.sortBy('insurance', 'coverageStartDate')}" />
+                </f:facet>
+                <h:outputText value="#{insurance.coverageStartDate}">
+                    <f:convertDateTime pattern="yyyy-MM-dd" />
+                </h:outputText>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:commandLink value="Coverage End#{insuranceController.sortField eq 'coverageEndDate' ? (insuranceController.ascending ? ' ↑' : ' ↓') : ''}"
+                                   action="#{insuranceController.sortBy('insurance', 'coverageEndDate')}" />
+                </f:facet>
+                <h:outputText value="#{insurance.coverageEndDate}">
+                    <f:convertDateTime pattern="yyyy-MM-dd" />
+                </h:outputText>
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:commandLink value="Coverage Type#{insuranceController.sortField eq 'coverageType' ? (insuranceController.ascending ? ' ↑' : ' ↓') : ''}"
+                                   action="#{insuranceController.sortBy('insurance', 'coverageType')}" />
+                </f:facet>
+                <h:outputText value="#{insurance.coverageType}" />
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:commandLink value="Status#{insuranceController.sortField eq 'coverageStatus' ? (insuranceController.ascending ? ' ↑' : ' ↓') : ''}"
+                                   action="#{insuranceController.sortBy('insurance', 'coverageStatus')}" />
+                </f:facet>
+                <h:outputText value="#{insurance.coverageStatus}" />
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:commandLink value="Coverage Limit#{insuranceController.sortField eq 'coverageLimit' ? (insuranceController.ascending ? ' ↑' : ' ↓') : ''}"
+                                   action="#{insuranceController.sortBy('insurance', 'coverageLimit')}" />
+                </f:facet>
+                <h:outputText value="#{insurance.coverageLimit}" />
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:commandLink value="Remaining Amount#{insuranceController.sortField eq 'remaining' ? (insuranceController.ascending ? ' ↑' : ' ↓') : ''}"
+                                   action="#{insuranceController.sortBy('insurance', 'remaining')}" />
+                </f:facet>
+                <h:outputText value="#{insurance.remaining}" />
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:commandLink value="Claimed Amount#{providerController.sortField eq 'claimed' ? (providerController.ascending ? ' ↑' : ' ↓') : ''}"
+                                   action="#{providerController.sortBy('insurance', 'claimed')}" />
+                </f:facet>
+                <h:outputText value="#{insurance.claimed}" />
+            </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:commandLink value="Last Claim Date#{insuranceController.sortField eq 'lastClaimDate' ? (insuranceController.ascending ? ' ↑' : ' ↓') : ''}"
+                                   action="#{insuranceController.sortBy('insurance', 'lastClaimDate')}" />
+                </f:facet>
+                <h:outputText value="#{insurance.lastClaimDate}">
+                    <f:convertDateTime pattern="yyyy-MM-dd" />
+                </h:outputText>
+            </h:column>
+            <h:column>
+                <f:facet name="header"><h:outputText value="Action" /></f:facet>
+                <h:panelGroup rendered="#{insurance.coverageType eq 'FAMILY'}">
+                    <h:commandButton value="View Members" action="#{insuranceController.redirect(insurance)}" />
+                </h:panelGroup>
+            </h:column>
+        </h:dataTable>
+
+      <!-- Repeat the same structure for insurance pagination -->
+<h:panelGroup layout="block" style="margin-top: 10px;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <!-- Left side buttons -->
+        <div>
+            <h:commandButton value="First" action="#{insuranceController.setInsuranceFirst(0)}"
+                             disabled="#{insuranceController.insuranceFirst == 0}" />
+            <h:commandButton value="Previous" action="#{insuranceController.previousInsurancePage()}"
+                             disabled="#{insuranceController.insuranceFirst == 0}" />
+        </div>
+
+        <!-- Center page text -->
+        <div>
+            <h:outputText value="Page #{insuranceController.insuranceCurrentPage} of #{insuranceController.insuranceTotalPages}" />
+        </div>
+
+        <!-- Right side buttons -->
+        <div>
+            <h:commandButton value="Next" action="#{insuranceController.nextInsurancePage()}"
+                             disabled="#{!insuranceController.isInsuranceHasNextPage()}" />
+            <h:commandButton value="Last"
+                             action="#{insuranceController.setInsuranceFirst(insuranceController.patientInsuranceList.size() - (insuranceController.patientInsuranceList.size() mod insuranceController.insurancePageSize))}"
+                             disabled="#{!insuranceController.isInsuranceHasNextPage()}" />
+        </div>
+    </div>
+</h:panelGroup>
+
+<br>
+ <h:panelGroup rendered="#{insuranceController.cameFromPatientSearch and insuranceController.showInsuranceFlag}">
+        <h:commandButton value="Back to PatientLists" action="#{insuranceController.backToPatients}"/>
+    </h:panelGroup>
+
+    </h:form>
+</h:panelGroup>
+
+</body>
+</html>
+</f:view>

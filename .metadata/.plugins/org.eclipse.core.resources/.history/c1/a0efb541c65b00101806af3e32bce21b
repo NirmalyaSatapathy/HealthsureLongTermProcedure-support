@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+  "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+  "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+  <class name="com.java.jsf.provider.model.ProcedureLog" table="procedure_daily_log">
+
+    <id name="logId" column="log_id" type="string">
+      <generator class="uuid.hex"/>
+    </id>
+
+    <!-- Many-to-One: reference to MedicalProcedure -->
+    <many-to-one name="medicalProcedure" class="com.java.jsf.provider.model.MedicalProcedure"
+                 column="procedure_id" not-null="true" fetch="join"/>
+
+    <!-- Log date for the entry -->
+    <property name="logDate" column="log_date" type="date" not-null="true"/>
+
+    <!-- Optional vitals and notes -->
+    <property name="vitals" column="vitals" type="string"/>
+    <property name="notes" column="notes" type="text"/>
+
+    <!-- Timestamp -->
+    <property name="createdAt" column="created_at" type="timestamp" not-null="true"/>
+
+  </class>
+</hibernate-mapping>

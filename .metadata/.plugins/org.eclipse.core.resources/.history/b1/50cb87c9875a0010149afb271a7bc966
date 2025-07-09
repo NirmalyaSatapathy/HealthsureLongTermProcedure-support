@@ -1,0 +1,10 @@
+package com.java.jsf.provider.model;
+
+public enum MedicineType {
+	package com.java.ejb.provider.model;
+
+	public enum MedicineType {
+	TABLET,SYRUP,INJECTION,DROP
+	}
+
+}

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.java.jsf.provider.model">
+
+    <class name="PrescribedMedicines" table="prescribed_medicines">
+    
+        <id name="prescribedId" column="prescribed_id" type="string">
+            <generator class="assigned"/>
+        </id>
+        
+        <many-to-one name="prescription" class="com.java.jsf.provider.model.Prescription" 
+                     column="prescription_id" not-null="true" cascade="none" />
+        
+        <property name="medicineName" column="medicine_name" type="string" />
+        
+        <property name="dosage" column="dosage" type="string" />
+        
+        <property name="duration" column="duration" type="string" />
+        
+        <property name="notes" column="notes" type="string" />
+         <property name="loginStatus">
+      <column name="login_status" sql-type="enum('PENDING','APPROVED','REJECTED')" not-null="true"/>
+      <type name="org.hibernate.type.EnumType">
+        <param name="enumClass">com.java.jsf.provider.model.LoginStatus</param>
+        <param name="type">12</param>
+        <param name="useNamed">true</param>
+      </type>
+    </property>
+        <property name="createdAt" column="created_at" type="timestamp" />
+		 <property name="startDate" column="start_date" type="timestamp" not-null="true"/>
+      <property name="endDate" column="end_date" type="timestamp" not-null="true"/>
+    </class>
+
+</hibernate-mapping>

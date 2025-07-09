@@ -1,0 +1,5 @@
+package com.java.ejb.provider.model;
+
+public enum ProcedureStatus {
+	SCHEDULED,IN, 'completed', 'cancelled'
+}

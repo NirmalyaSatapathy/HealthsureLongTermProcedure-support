@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+		"-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+		"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/HealthSure</property>
+        <property name="hibernate.connection.password">nirmalyas9348</property>
+        <property name="hibernate.connection.username">root</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+        <property name="hibernate.cache.use_second_level_cache">false</property>
+<property name="hibernate.cache.use_query_cache">false</property>
+<property name="hibernate.cache.provider_class">org.hibernate.cache.internal.NoCachingRegionFactory</property>
+
+        <mapping resource="com/java/jsf/insurance/mapping/InsuranceCompany.hbm.xml"/>
+         <mapping resource="com/java/jsf/insurance/mapping/InsuranceCoverageOption.hbm.xml"/>
+          <mapping resource="com/java/jsf/insurance/mapping/InsurancePlan.hbm.xml"/>
+           <mapping resource="com/java/jsf/insurance/mapping/Subscribe.hbm.xml"/>
+            <mapping resource="com/java/jsf/insurance/mapping/SubscribedMember.hbm.xml"/>
+        <mapping resource="com/java/jsf/provider/mapping/Appointment.hbm.xml"/>
+          <mapping resource="com/java/jsf/provider/mapping/DoctorAvailability.hbm.xml"/>
+         <mapping resource="com/java/jsf/provider/mapping/ClaimHistory.hbm.xml"/>
+          <mapping resource="com/java/jsf/provider/mapping/Claims.hbm.xml"/>
+           <mapping resource="com/java/jsf/provider/mapping/Doctor.hbm.xml"/>
+            <mapping resource="com/java/jsf/provider/mapping/MedicalProcedure.hbm.xml"/>
+             <mapping resource="com/java/jsf/provider/mapping/Prescription.hbm.xml"/>
+              <mapping resource="com/java/jsf/provider/mapping/ProcedureTest.hbm.xml"/>
+              <mapping resource="com/java/jsf/provider/mapping/Account.hbm.xml"/>
+               <mapping resource="com/java/jsf/provider/mapping/Provider.hbm.xml"/>
+         <mapping resource="com/java/jsf/recipient/mapping/Recipient.hbm.xml"/>
+          <mapping resource="com/java/jsf/pharmacy/mapping/DispensedMedicine.hbm.xml"/>
+          <mapping resource="com/java/jsf/pharmacy/mapping/DispensedEquipment.hbm.xml"/>
+            <mapping resource="com/java/jsf/admin/mapping/PaymentHistory.hbm.xml"/>
+            <mapping resource="com/java/jsf/provider/mapping/PrescribedMedicines.hbm.xml"/>
+            <mapping resource="com/java/jsf/provider/mapping/Pr.hbm.xml"/>
+    </session-factory>
+</hibernate-configuration>

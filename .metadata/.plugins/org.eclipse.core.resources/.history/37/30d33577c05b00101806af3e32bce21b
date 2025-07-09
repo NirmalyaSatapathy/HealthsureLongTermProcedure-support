@@ -1,0 +1,31 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<%@ taglib uri="http://xmlns.jcp.org/jsf/html" prefix="h" %>
+<%@ taglib uri="http://xmlns.jcp.org/jsf/core" prefix="f" %>
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Procedure Type</title>
+</head>
+<f:view>
+<h:body>
+    <h:form>
+        <h:panelGrid columns="1" cellpadding="5">
+            <h:outputText value="Select Procedure Type:" />
+
+            <!-- Radio Buttons -->
+            <h:selectOneRadio value="#{procedureController.procedureType}">
+                <f:selectItem itemLabel="Single Day Procedure" itemValue="single" />
+                <f:selectItem itemLabel="Scheduled Procedure" itemValue="scheduled" />
+            </h:selectOneRadio>
+
+            <!-- Submit Button -->
+            <h:commandButton value="Create New Procedure"
+                             action="#{procedureController.createNewProcedure()}" />
+        </h:panelGrid>
+    </h:form>
+</h:body>
+</f:view>
+</html>

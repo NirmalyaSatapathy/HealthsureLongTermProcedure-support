@@ -1,0 +1,165 @@
+package com.java.jsf.util;
+
+import java.util.List;
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.AnnotationConfiguration;
+
+public class ProcedureIdGenerator {
+	 static SessionFactory sessionFactory;
+	    static {
+	        sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
+	    }
+	    public String generateNewProcedureId() {
+	        Session session = null;
+	        String newProcedureId = "PROC001";
+
+	        try {
+	            session = sessionFactory.openSession();
+	            Query query = session.createQuery("SELECT p.procedureId FROM MedicalProcedure p ORDER BY p.procedureId DESC");
+	            query.setMaxResults(1);
+	            List<String> procedureIds = query.list();
+
+	            if (procedureIds != null && !procedureIds.isEmpty()) {
+	                String latestProcedureId = procedureIds.get(0);
+
+	                if (latestProcedureId != null && latestProcedureId.startsWith("PROC")) {
+	                    String numericPart = latestProcedureId.substring(4); // "PROC" has length 4
+
+	                    try {
+	                        int currentNum = Integer.parseInt(numericPart);
+	                        currentNum++;
+
+	                        if (currentNum <= 999) {
+	                            newProcedureId = "PROC" + String.format("%03d", currentNum);
+	                        } else {
+	                            newProcedureId = "PROC999";
+	                        }
+	                    } catch (NumberFormatException e) {
+	                        e.printStackTrace(); // You can log this instead
+	                    }
+	                }
+	            }
+	        } finally {
+	            if (session != null) {
+	                session.close();
+	            }
+	        }
+
+	        return newProcedureId;
+	    }
+	    public String generateNewPrescriptionId() {
+	        Session session = null;
+	        String newPrescriptionId = "PRESC001";
+
+	        try {
+	            session = sessionFactory.openSession();
+	            Query query = session.createQuery("SELECT pr.prescriptionId FROM Prescription pr ORDER BY pr.prescriptionId DESC");
+	            query.setMaxResults(1);
+
+	            String latestPrescriptionId = (String) query.uniqueResult(); // Use uniqueResult for clarity
+
+	            if (latestPrescriptionId != null && latestPrescriptionId.startsWith("PRESC")) {
+	                String numericPart = latestPrescriptionId.substring(5); // "PRESC" has length 5
+
+	                try {
+	                    int currentNum = Integer.parseInt(numericPart);
+	                    currentNum++;
+
+	                    if (currentNum <= 999) {
+	                        newPrescriptionId = "PRESC" + String.format("%03d", currentNum);
+	                    } else {
+	                        newPrescriptionId = "PRESC999"; // cap limit
+	                    }
+	                } catch (NumberFormatException e) {
+	                    e.printStackTrace(); // Log or handle invalid format
+	                }
+	            }
+
+	        } finally {
+	            if (session != null) {
+	                session.close();
+	            }
+	        }
+
+	        return newPrescriptionId;
+	    }
+	    public String generateNewPrescribedMedicineId() {
+	        Session session = null;
+	        String newPrescribedMedicineId = "PMED001";
+
+	        try {
+	            session = sessionFactory.openSession();
+	            Query query = session.createQuery(
+	                "SELECT pm.prescribedId FROM PrescribedMedicines pm ORDER BY pm.prescribedId DESC"
+	            );
+	            query.setMaxResults(1);
+
+	            String latestPrescribedId = (String) query.uniqueResult(); // Get the latest ID
+
+	            if (latestPrescribedId != null && latestPrescribedId.startsWith("PMED")) {
+	                String numericPart = latestPrescribedId.substring(4); // "PMED" is 4 characters
+
+	                try {
+	                    int currentNum = Integer.parseInt(numericPart);
+	                    currentNum++;
+
+	                    if (currentNum <= 999) {
+	                        newPrescribedMedicineId = "PMED" + String.format("%03d", currentNum);
+	                    } else {
+	                        newPrescribedMedicineId = "PMED999"; // Cap limit
+	                    }
+	                } catch (NumberFormatException e) {
+	                    e.printStackTrace(); // Log the error
+	                }
+	            }
+
+	        } finally {
+	            if (session != null) {
+	                session.close();
+	            }
+	        }
+
+	        return newPrescribedMedicineId;
+	    }
+	    public String generateNewProcedureTestId() {
+	        Session session = null;
+	        String newProcedureTestId = "PTEST001";
+
+	        try {
+	            session = sessionFactory.openSession();
+	            Query query = session.createQuery(
+	                "SELECT pt.testId FROM ProcedureTest pt ORDER BY pt.testId DESC"
+	            );
+	            query.setMaxResults(1);
+
+	            String latestTestId = (String) query.uniqueResult(); // Get the latest ID
+
+	            if (latestTestId != null && latestTestId.startsWith("PTEST")) {
+	                String numericPart = latestTestId.substring(5); // "PTEST" has 5 characters
+
+	                try {
+	                    int currentNum = Integer.parseInt(numericPart);
+	                    currentNum++;
+
+	                    if (currentNum <= 999) {
+	                        newProcedureTestId = "PTEST" + String.format("%03d", currentNum);
+	                    } else {
+	                        newProcedureTestId = "PTEST999"; // Cap limit
+	                    }
+	                } catch (NumberFormatException e) {
+	                    e.printStackTrace(); // Log the error
+	                }
+	            }
+
+	        } finally {
+	            if (session != null) {
+	                session.close();
+	            }
+	        }
+
+	        return newProcedureTestId;
+	    }
+}

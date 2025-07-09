@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+     "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+     "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.java.jsf.pharmacy.model">
+
+    <class name="DispensedEquipment" table="dispensed_equipment">
+    
+        <id name="dispensedEquipId" column="dispensed_equip_id" type="string">
+            <generator class="assigned"/>
+        </id>
+
+        <many-to-one name="equipment" column="equipment_id" class="com.java.jsf.pharmacy.model.DispensedEquipment" not-null="true"/>
+
+        <property name="quantityDispensed" column="quantity_dispensed" type="integer"/>
+        <property name="dispenseDate" column="dispense_date" type="date"/>
+
+        <many-to-one name="prescription" column="prescription_id" class="com.java.jsf.provider.model.Prescription" not-null="false"/>
+        <many-to-one name="doctor" column="doctor_id" class="com.java.jsf.provider.model.Doctor" not-null="false"/>
+        <many-to-one name="recipient" column="h_id" class="com.java.jsf.recipient.model.Recipient" not-null="true"/>
+    </class>
+
+</hibernate-mapping>

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;HealthSureClient/src/main/webapp/PrescribedMedicinesDashboard.jsp&apos; to &apos;PrescriptionDashboard.jsp&apos;" description="Rename resource &apos;PrescribedMedicinesDashboard.jsp&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="src/main/webapp/PrescribedMedicinesDashboard.jsp" name="PrescriptionDashboard.jsp" stamp="1751275298287" updateReferences="true"/>
+</session>

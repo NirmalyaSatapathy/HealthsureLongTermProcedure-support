@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+  "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+  "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping>
+  <class name="com.java.jsf.provider.model.MedicalProcedure" table="medical_procedure">
+
+    <id name="procedureId" column="procedure_id" type="string">
+      <generator class="assigned"/>
+    </id>
+
+    <!-- Many-to-One Relationships -->
+    <many-to-one name="appointment" class="com.java.jsf.provider.model.Appointment" column="appointment_id" not-null="true" fetch="join"/>
+    <many-to-one name="recipient" class="com.java.jsf.recipient.model.Recipient" column="h_id" not-null="true" fetch="join"/>
+    <many-to-one name="provider" class="com.java.jsf.provider.model.Provider" column="provider_id" not-null="true" fetch="join"/>
+    <many-to-one name="doctor" class="com.java.jsf.provider.model.Doctor" column="doctor_id" not-null="true" fetch="join"/>
+
+    <!-- Date and Enum Properties -->
+    <property name="scheduledDate" column="scheduled_date" type="date"/>
+    <property name="procedureDate" column="procedure_date" type="date" not-null="true"/>
+    <property name="fromDate" column="from_date" type="timestamp" not-null="true"/>
+    <property name="toDate" column="to_date" type="timestamp"/>
+    <property name="createdAt" column="created_at" type="timestamp" not-null="true"/>
+
+     <property name="procedureStatus">
+    <column name="procedure_status" sql-type="enum('SCHEDULED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED')" not-null="true"/>
+    <type name="org.hibernate.type.EnumType">
+        <param name="enumClass">com.java.jsf.provider.model.ProcedureStatus</param>
+        <param name="type">12</param>
+        <param name="useNamed">true</param>
+    </type>
+</property>
+<property name="typ">
+    <column name="procedure_status" sql-type="enum('SCHEDULED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED')" not-null="true"/>
+    <type name="org.hibernate.type.EnumType">
+        <param name="enumClass">com.java.jsf.provider.model.ProcedureStatus</param>
+        <param name="type">12</param>
+        <param name="useNamed">true</param>
+    </type>
+</property>
+
+    <!-- Text Properties -->
+    <property name="diagnosis" column="diagnosis" type="text" not-null="true"/>
+    <property name="recommendations" column="recommendations" type="text"/>
+
+    <!-- One-to-Many Relationships -->
+    <set name="claims" table="Claims" inverse="true" lazy="true">
+      <key column="procedure_id" not-null="true"/>
+      <one-to-many class="com.java.jsf.provider.model.Claims"/>
+    </set>
+
+    <set name="prescriptions" table="prescription" cascade="all-delete-orphan" lazy="true" inverse="true">
+      <key column="procedure_id" not-null="true"/>
+      <one-to-many class="com.java.jsf.provider.model.Prescription"/>
+    </set>
+
+    <set name="logs" table="procedure_daily_log" cascade="all-delete-orphan" lazy="true" inverse="true">
+      <key column="procedure_id" not-null="true"/>
+      <one-to-many class="com.java.jsf.provider.model.ProcedureDailyLog"/>
+    </set>
+
+  </class>
+</hibernate-mapping>

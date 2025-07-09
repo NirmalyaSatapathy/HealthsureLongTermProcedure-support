@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC 
+    "-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+    "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="com.java.jsf.admin.model">
+
+    <class name="PaymentHistory" table="payment_history">
+    
+        <id name="paymentId" column="payment_id">
+            <generator class="native"/>
+        </id>
+
+        <many-to-one name="recipient" class="com.java.jsf.recipient.model.Recipient" column="h_id" not-null="true"/>
+        
+        <many-to-one name="provider" class="com.java.jsf.provider.model.Provider" column="provider_id" not-null="true"/>
+        
+        <property name="amount" column="amount" type="big_decimal" not-null="true"/>
+        
+        <property name="paymentMethod" column="payment_method" length="50"/>
+        
+        <property name="paymentStatus" column="payment_status" length="50"/>
+        
+        <property name="paymentDate" column="payment_date" type="date"/>
+        
+        <property name="remarks" column="remarks" length="255"/>
+    
+    </class>
+
+</hibernate-mapping>
