@@ -87,27 +87,27 @@
 
             <div class="form-group">
                 <label for="prescribedId">Prescribed ID</label>
-                <h:inputText id="prescribedId" value="#{procedureController.prescribedMedicines.prescribedId}" 
+                <h:inputText id="prescribedId" value="#{procedureController.prescribedMedicine.prescribedId}" 
                              readonly="true" styleClass="form-control"/>
             </div>
 
             <div class="form-group">
                 <label for="prescriptionId">Prescription ID</label>
-                <h:inputText id="prescriptionId" value="#{sessionScope.prescriptionId}" 
+                <h:inputText id="prescriptionId" value="#{procedureController.prescription.prescriptionId}" 
                              readonly="true" styleClass="form-control"/>
                 <h:message for="prescriptionId" styleClass="error"/>
             </div>
 
             <div class="form-group">
                 <label for="medicineName">Medicine Name <span style="color:red">*</span></label>
-                <h:inputText id="medicineName" value="#{procedureController.prescribedMedicines.medicineName}" 
+                <h:inputText id="medicineName" value="#{procedureController.prescribedMedicine.medicineName}" 
                              required="true" styleClass="form-control"/>
                 <h:message for="medicineName" styleClass="error"/>
             </div>
 
             <div class="form-group">
                 <label for="type">Medicine Type <span style="color:red">*</span></label>
-                <h:selectOneMenu id="type" value="#{procedureController.prescribedMedicines.type}" 
+                <h:selectOneMenu id="type" value="#{procedureController.prescribedMedicine.type}" 
                                  styleClass="form-control" required="true">
                     <f:selectItem itemLabel="-- Select Type --" itemValue="" />
                     <f:selectItem itemLabel="Tablet" itemValue="TABLET" />
@@ -120,21 +120,21 @@
 
             <div class="form-group">
                 <label for="dosage">Dosage(In whole number) <span style="color:red">*</span></label>
-                <h:inputText id="dosage" value="#{procedureController.prescribedMedicines.dosage}" 
+                <h:inputText id="dosage" value="#{procedureController.prescribedMedicine.dosage}" 
                              required="true" styleClass="form-control"/>
                 <h:message for="dosage" styleClass="error"/>
             </div>
 
             <div class="form-group">
                 <label for="duration">Duration(In days) <span style="color:red">*</span></label>
-                <h:inputText id="duration" value="#{procedureController.prescribedMedicines.duration}" 
+                <h:inputText id="duration" value="#{procedureController.prescribedMedicine.duration}" 
                              required="true" styleClass="form-control"/>
                 <h:message for="duration" styleClass="error"/>
             </div>
 
             <div class="form-group">
                 <label for="startDate">Start Date <span style="color:red">*</span></label>
-                <h:inputText id="startDate" value="#{procedureController.prescribedMedicines.startDate}" 
+                <h:inputText id="startDate" value="#{procedureController.prescribedMedicine.startDate}" 
                              styleClass="form-control" required="true">
                     <f:convertDateTime pattern="yyyy-MM-dd" />
                 </h:inputText>
@@ -143,7 +143,7 @@
 
             <div class="form-group">
                 <label for="endDate">End Date <span style="color:red">*</span></label>
-                <h:inputText id="endDate" value="#{procedureController.prescribedMedicines.endDate}" 
+                <h:inputText id="endDate" value="#{procedureController.prescribedMedicine.endDate}" 
                              styleClass="form-control" required="true" >
                     <f:convertDateTime pattern="yyyy-MM-dd" />
                 </h:inputText>
@@ -152,14 +152,14 @@
 
             <div class="form-group">
                 <label for="notes">Notes</label>
-                <h:inputTextarea id="notes" value="#{procedureController.prescribedMedicines.notes}" 
+                <h:inputTextarea id="notes" value="#{procedureController.prescribedMedicine.notes}" 
                                  cols="30" rows="4" styleClass="form-control"/>
                 <h:message for="notes" styleClass="error"/>
             </div>
 
          <div class="button-group">
     <h:commandButton value="Add Medicine" 
-                     action="#{procedureController.addPresribedMedicinesController(procedureController.prescribedMedicines)}" 
+                     action="#{procedureController.addPresribedMedicinesController(procedureController.prescribedMedicine)}" 
                      styleClass="btn-add" />
 
     <h:commandButton value="Reset Form"

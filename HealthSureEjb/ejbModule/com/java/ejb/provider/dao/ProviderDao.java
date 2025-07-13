@@ -19,8 +19,8 @@ public interface ProviderDao {
 	public String generateNewProcedureId() throws SQLException, ClassNotFoundException;
 	public String addProcedureDailyLog(ProcedureDailyLog log) throws ClassNotFoundException, SQLException;
 	public String generateNewProcedureLogId() throws ClassNotFoundException, SQLException;
-	public List<MedicalProcedure> getScheduledProcedures();
 	public List<MedicalProcedure> getInProgressProcedures();
 	public String updateProcedureStatus(MedicalProcedure procedure);
 	public MedicalProcedure getProcedureById(String id);
+	List<MedicalProcedure> getScheduledProceduresByDoctor(String doctorId, String procedureId);
 }

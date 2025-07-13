@@ -97,7 +97,7 @@
             <!-- Prescription ID (readonly from session) -->
             <div class="form-group">
                 <h:outputLabel for="prescriptionId" value="Prescription ID:" />
-                <h:inputText id="prescriptionId" value="#{sessionScope.prescriptionId}" readonly="true" />
+                <h:inputText id="prescriptionId" value="#{procedureController.prescription.prescriptionId}" readonly="true" />
             </div>
 
             <!-- Test ID -->

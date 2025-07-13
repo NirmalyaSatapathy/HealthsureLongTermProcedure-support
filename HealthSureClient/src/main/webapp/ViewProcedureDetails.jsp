@@ -127,7 +127,7 @@
                     <h:outputLabel for="appointmentId">
                         Appointment ID: <span style="color:red">*</span>
                     </h:outputLabel>
-                    <h:inputText id="appointmentId" value="#{procedureController.selectedProcedure.appointment.appointmentId}" required="true" />
+                    <h:inputText id="appointmentId" value="#{procedureController.selectedProcedure.appointment.appointmentId}" readonly="true" />
                     <h:message for="appointmentId" styleClass="error-message" />
                 </div>
 
@@ -135,7 +135,7 @@
                     <h:outputLabel for="recipientId">
                         Patient (h_id): <span style="color:red">*</span>
                     </h:outputLabel>
-                    <h:inputText id="recipientId" value="#{procedureController.selectedProcedure.recipient.hId}" required="true" />
+                    <h:inputText id="recipientId" value="#{procedureController.selectedProcedure.recipient.hId}" readonly="true" />
                     <h:message for="recipientId" styleClass="error-message" />
                 </div>
 
@@ -143,7 +143,7 @@
                     <h:outputLabel for="providerId">
                         Provider ID: <span style="color:red">*</span>
                     </h:outputLabel>
-                    <h:inputText id="providerId" value="#{procedureController.selectedProcedure.provider.providerId}" required="true" />
+                    <h:inputText id="providerId" value="#{procedureController.selectedProcedure.provider.providerId}" readonly="true" />
                     <h:message for="providerId" styleClass="error-message" />
                 </div>
 
@@ -151,7 +151,7 @@
                     <h:outputLabel for="doctorId">
                         Doctor ID: <span style="color:red">*</span>
                     </h:outputLabel>
-                    <h:inputText id="doctorId" value="#{procedureController.selectedProcedure.doctor.doctorId}" required="true" />
+                    <h:inputText id="doctorId" value="#{procedureController.selectedProcedure.doctor.doctorId}" readonly="true" />
                     <h:message for="doctorId" styleClass="error-message" />
                 </div>
 
@@ -174,7 +174,7 @@
                 </div>
 
                 <div class="form-group full-width">
-                    <h:outputLabel for="recommendations" value="Recommendations:" />
+                    <h:outputLabel for="recommendations" value="Recommendations:"/>
                     <h:inputTextarea id="recommendations" value="#{procedureController.selectedProcedure.recommendations}" />
                     <h:message for="recommendations" styleClass="error-message" />
                 </div>

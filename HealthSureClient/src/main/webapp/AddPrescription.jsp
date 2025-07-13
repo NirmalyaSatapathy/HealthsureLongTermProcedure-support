@@ -107,22 +107,22 @@
 
                 <div class="form-group">
                     <h:outputLabel for="procedureId" value="Procedure ID:" />
-                    <h:inputText id="procedureId" value="#{sessionScope.procedureId}" readonly="true" />
+                    <h:inputText id="procedureId" value="#{procedureController.procedure.procedureId}" readonly="true" />
                 </div>
 
                 <div class="form-group">
                     <h:outputLabel for="recipientId" value="Recipient ID:" />
-                    <h:inputText id="recipientId" value="#{sessionScope.recipientHid}" readonly="true" />
+                    <h:inputText id="recipientId" value="#{procedureController.procedure.recipient.hId}" readonly="true" />
                 </div>
 
                 <div class="form-group">
                     <h:outputLabel for="providerId" value="Provider ID:" />
-                    <h:inputText id="providerId" value="#{sessionScope.providerId}" readonly="true" />
+                    <h:inputText id="providerId" value="#{procedureController.procedure.provider.providerId}" readonly="true" />
                 </div>
 
                 <div class="form-group">
                     <h:outputLabel for="doctorId" value="Doctor ID:" />
-                    <h:inputText id="doctorId" value="#{sessionScope.doctorId}" readonly="true" />
+                    <h:inputText id="doctorId" value="#{procedureController.procedure.doctor.doctorId}" readonly="true" />
                 </div>
             </div>
 

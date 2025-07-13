@@ -1,5 +1,8 @@
 package com.java.jsf.util;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import com.java.ejb.provider.model.Appointment;
 import com.java.ejb.provider.model.Doctor;
 import com.java.ejb.provider.model.DoctorAvailability;
@@ -97,6 +100,16 @@ public class Converter {
 	    // but if needed, you can copy them here as well using separate converters.
 
 	    return ejbProcedure;
+	}
+	public static Date truncateTime(Date date) {
+	    if (date == null) return null;
+	    Calendar cal = Calendar.getInstance();
+	    cal.setTime(date);
+	    cal.set(Calendar.HOUR_OF_DAY, 0);
+	    cal.set(Calendar.MINUTE, 0);
+	    cal.set(Calendar.SECOND, 0);
+	    cal.set(Calendar.MILLISECOND, 0);
+	    return cal.getTime();
 	}
 
 

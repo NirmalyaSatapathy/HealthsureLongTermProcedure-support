@@ -363,7 +363,7 @@ public class ProviderDaoImpl implements ProviderDao{
 	    return newLogId;
 	}
 	@Override
-	public List<MedicalProcedure> getScheduledProcedures() {
+	public List<MedicalProcedure> getScheduledProceduresByDoctor(String doctorId, String procedureId) {
 	    List<MedicalProcedure> procedures = new ArrayList<>();
 	    Connection con = null;
 	    PreparedStatement pst = null;
@@ -371,20 +371,28 @@ public class ProviderDaoImpl implements ProviderDao{
 
 	    try {
 	        con = ConnectionHelper.getConnection();
-	        String sql = "SELECT " +
-	                     "mp.procedure_id, mp.h_id, mp.provider_id, mp.doctor_id, " +
-	                     "mp.appointment_id, mp.scheduled_date, mp.procedure_status, " +
-	                     "r.first_name, r.last_name, " +
-	                     "d.doctor_name, " +
-	                     "p.provider_name " +
-	                     "FROM medical_procedure mp " +
-	                     "JOIN Recipient r ON mp.h_id = r.h_id " +
-	                     "JOIN Doctors d ON mp.doctor_id = d.doctor_id " +
-	                     "JOIN Providers p ON mp.provider_id = p.provider_id " +
-	                     "WHERE mp.procedure_status = ?";
+	        StringBuilder sql = new StringBuilder(
+	            "SELECT mp.procedure_id, mp.h_id, mp.provider_id, mp.doctor_id, " +
+	            "mp.appointment_id, mp.scheduled_date, mp.procedure_status, " +
+	            "r.first_name, r.last_name, d.doctor_name, p.provider_name " +
+	            "FROM medical_procedure mp " +
+	            "JOIN Recipient r ON mp.h_id = r.h_id " +
+	            "JOIN Doctors d ON mp.doctor_id = d.doctor_id " +
+	            "JOIN Providers p ON mp.provider_id = p.provider_id " +
+	            "WHERE mp.procedure_status = ? AND mp.doctor_id = ?"
+	        );
 
-	        pst = con.prepareStatement(sql);
+	        if (procedureId != null && !procedureId.trim().isEmpty()) {
+	            sql.append(" AND mp.procedure_id = ?");
+	        }
+
+	        pst = con.prepareStatement(sql.toString());
 	        pst.setString(1, ProcedureStatus.SCHEDULED.name());
+	        pst.setString(2, doctorId);
+
+	        if (procedureId != null && !procedureId.trim().isEmpty()) {
+	            pst.setString(3, procedureId);
+	        }
 
 	        rs = pst.executeQuery();
 
@@ -392,12 +400,13 @@ public class ProviderDaoImpl implements ProviderDao{
 	            MedicalProcedure proc = new MedicalProcedure();
 
 	            proc.setProcedureId(rs.getString("procedure_id"));
-	        
 	            proc.setScheduledDate(rs.getDate("scheduled_date"));
 	            proc.setProcedureStatus(ProcedureStatus.valueOf(rs.getString("procedure_status")));
-	            Appointment appointment=new Appointment();
+
+	            Appointment appointment = new Appointment();
 	            appointment.setAppointmentId(rs.getString("appointment_id"));
 	            proc.setAppointment(appointment);
+
 	            Recipient recipient = new Recipient();
 	            recipient.sethId(rs.getString("h_id"));
 	            recipient.setFirstName(rs.getString("first_name"));
@@ -424,9 +433,10 @@ public class ProviderDaoImpl implements ProviderDao{
 	        try { if (pst != null) pst.close(); } catch (Exception e) {}
 	        try { if (con != null) con.close(); } catch (Exception e) {}
 	    }
-	    System.out.println(procedures);
+
 	    return procedures;
 	}
+
 
 
 	@Override

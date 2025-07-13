@@ -22,7 +22,7 @@ public String generateNewPrescriptionId() throws ClassNotFoundException, SQLExce
 public String generateNewPrescribedMedicineId() throws ClassNotFoundException, SQLException;
 public String generateNewProcedureTestId() throws ClassNotFoundException, SQLException;
 public String generateNewProcedureLogId();
-public List<MedicalProcedure> getScheduledProcedures();
+List<MedicalProcedure> getScheduledProceduresByDoctor(String doctorId, String procedureId);
 public List<MedicalProcedure> getInProgressProcedures();
 public String updateProcedureStatus(MedicalProcedure procedure);
 public MedicalProcedure getProcedureById(String id);

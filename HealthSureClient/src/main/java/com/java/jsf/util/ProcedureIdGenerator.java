@@ -7,6 +7,11 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
 
+import com.java.ejb.provider.model.PrescribedMedicines;
+import com.java.ejb.provider.model.Prescription;
+import com.java.ejb.provider.model.ProcedureDailyLog;
+import com.java.ejb.provider.model.ProcedureTest;
+
 public class ProcedureIdGenerator {
     static SessionFactory sessionFactory;
 
@@ -14,145 +19,86 @@ public class ProcedureIdGenerator {
         sessionFactory = new AnnotationConfiguration().configure().buildSessionFactory();
     }
 
-    public static String generateNewProcedureId() {
-        Session session = null;
-        String newProcedureId = "PROC001";
+    public static String getNextPrescriptionId(List<Prescription> list) {
+        int max = 0;
 
-        try {
-            session = sessionFactory.openSession();
-            session.flush(); 
-            session.clear(); // Clear first-level cache
-
-            Query query = session.createQuery("SELECT p.procedureId FROM MedicalProcedure p ORDER BY p.procedureId DESC");
-            query.setMaxResults(1);
-            query.setCacheable(false);
-            List<String> procedureIds = query.list();
-
-            if (procedureIds != null && !procedureIds.isEmpty()) {
-                String latestProcedureId = procedureIds.get(0);
-
-                if (latestProcedureId != null && latestProcedureId.startsWith("PROC")) {
-                    String numericPart = latestProcedureId.substring(4);
-
-                    try {
-                        int currentNum = Integer.parseInt(numericPart);
-                        currentNum++;
-                        newProcedureId = (currentNum <= 999)
-                                ? "PROC" + String.format("%03d", currentNum)
-                                : "PROC999";
-                    } catch (NumberFormatException e) {
-                        e.printStackTrace();
+        for (Prescription p : list) {
+            String id = p.getPrescriptionId(); // e.g. PRESC005
+            if (id != null && id.startsWith("PRESC")) {
+                try {
+                    int num = Integer.parseInt(id.substring(5));
+                    if (num > max) {
+                        max = num;
                     }
+                } catch (NumberFormatException e) {
+                    // skip
                 }
             }
-        } finally {
-            if (session != null) session.close();
         }
-        System.out.println("________________________generated id is "+newProcedureId);
-        return newProcedureId;
+
+        int next = max + 1;
+        return "PRESC" + String.format("%03d", next);
     }
 
-    public static String generateNewPrescriptionId() {
-        Session session = null;
-        String newPrescriptionId = "PRESC001";
 
-        try {
-            session = sessionFactory.openSession();
-            session.clear();
+    public static String getNextPrescribedMedicineId(List<PrescribedMedicines> list) {
+        int max = 0;
 
-            Query query = session.createQuery("SELECT pr.prescriptionId FROM Prescription pr ORDER BY pr.prescriptionId DESC");
-            query.setMaxResults(1);
-            query.setCacheable(false);
-
-            String latestPrescriptionId = (String) query.uniqueResult();
-
-            if (latestPrescriptionId != null && latestPrescriptionId.startsWith("PRESC")) {
-                String numericPart = latestPrescriptionId.substring(5);
-
+        for (PrescribedMedicines med : list) {
+            String id = med.getPrescribedId(); // e.g. PMED004
+            if (id != null && id.startsWith("PMED")) {
                 try {
-                    int currentNum = Integer.parseInt(numericPart);
-                    currentNum++;
-                    newPrescriptionId = (currentNum <= 999)
-                            ? "PRESC" + String.format("%03d", currentNum)
-                            : "PRESC999";
+                    int num = Integer.parseInt(id.substring(4));
+                    if (num > max) {
+                        max = num;
+                    }
                 } catch (NumberFormatException e) {
-                    e.printStackTrace();
+                    // skip
                 }
             }
-
-        } finally {
-            if (session != null) session.close();
         }
 
-        return newPrescriptionId;
+        int next = max + 1;
+        return "PMED" + String.format("%03d", next);
     }
+    public static String getNextProcedureTestId(List<ProcedureTest> list) {
+        int max = 0;
 
-    public static String generateNewPrescribedMedicineId() {
-        Session session = null;
-        String newPrescribedMedicineId = "PMED001";
-
-        try {
-            session = sessionFactory.openSession();
-            session.clear();
-
-            Query query = session.createQuery("SELECT pm.prescribedId FROM PrescribedMedicines pm ORDER BY pm.prescribedId DESC");
-            query.setMaxResults(1);
-            query.setCacheable(false);
-
-            String latestPrescribedId = (String) query.uniqueResult();
-
-            if (latestPrescribedId != null && latestPrescribedId.startsWith("PMED")) {
-                String numericPart = latestPrescribedId.substring(4);
-
+        for (ProcedureTest test : list) {
+            String id = test.getTestId(); // e.g. PTEST007
+            if (id != null && id.startsWith("PTEST")) {
                 try {
-                    int currentNum = Integer.parseInt(numericPart);
-                    currentNum++;
-                    newPrescribedMedicineId = (currentNum <= 999)
-                            ? "PMED" + String.format("%03d", currentNum)
-                            : "PMED999";
+                    int num = Integer.parseInt(id.substring(5));
+                    if (num > max) {
+                        max = num;
+                    }
                 } catch (NumberFormatException e) {
-                    e.printStackTrace();
+                    // skip
                 }
             }
-
-        } finally {
-            if (session != null) session.close();
         }
 
-        return newPrescribedMedicineId;
+        int next = max + 1;
+        return "PTEST" + String.format("%03d", next);
     }
+    public static String getNextProcedureLogId(List<ProcedureDailyLog> list) {
+        int max = 0;
 
-    public static String generateNewProcedureTestId() {
-        Session session = null;
-        String newProcedureTestId = "PTEST001";
-
-        try {
-            session = sessionFactory.openSession();
-            session.clear();
-
-            Query query = session.createQuery("SELECT pt.testId FROM ProcedureTest pt ORDER BY pt.testId DESC");
-            query.setMaxResults(1);
-            query.setCacheable(false);
-            String latestTestId = (String) query.uniqueResult();
-
-            if (latestTestId != null && latestTestId.startsWith("PTEST")) {
-                String numericPart = latestTestId.substring(5);
-
+        for (ProcedureDailyLog log : list) {
+            String id = log.getLogId(); // e.g. PLOG010
+            if (id != null && id.startsWith("PLOG")) {
                 try {
-                    int currentNum = Integer.parseInt(numericPart);
-                    currentNum++;
-                    newProcedureTestId = (currentNum <= 999)
-                            ? "PTEST" + String.format("%03d", currentNum)
-                            : "PTEST999";
+                    int num = Integer.parseInt(id.substring(4));
+                    if (num > max) {
+                        max = num;
+                    }
                 } catch (NumberFormatException e) {
-                    e.printStackTrace();
+                    // skip
                 }
             }
-
-        } finally {
-            if (session != null) session.close();
         }
 
-        return newProcedureTestId;
+        int next = max + 1;
+        return "PLOG" + String.format("%03d", next);
     }
 }

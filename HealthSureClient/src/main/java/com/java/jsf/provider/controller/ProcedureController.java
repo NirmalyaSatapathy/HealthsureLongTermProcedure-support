@@ -2,14 +2,15 @@ package com.java.jsf.provider.controller;
 
 import java.lang.reflect.Field;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-
 import com.java.ejb.provider.bean.ProviderEjbImpl;
 import com.java.ejb.provider.model.Doctor;
 import com.java.ejb.provider.model.MedicalProcedure;
@@ -23,19 +24,49 @@ import com.java.ejb.provider.model.Provider;
 import com.java.ejb.recipient.model.Recipient;
 import com.java.jsf.provider.daoImpl.ProviderDaoImpl;
 import com.java.ejb.provider.model.ProcedureDailyLog;
+import com.java.jsf.util.Converter;
 import com.java.jsf.util.ProcedureIdGenerator;
 import com.java.ejb.provider.model.Appointment;
 
 public class ProcedureController {
     private ProviderEjbImpl providerEjb;
     private ProviderDaoImpl providerDao;
-    MedicalProcedure procedure;
     Prescription prescription;
-    PrescribedMedicines prescribedMedicines;
+    MedicalProcedure procedure;
+    PrescribedMedicines prescribedMedicine;
     ProcedureTest procedureTest;
     ProcedureDailyLog procedureLog;
+    List<Prescription> prescriptions=new ArrayList<Prescription>();
+    List<PrescribedMedicines> prescribedMedicines=new ArrayList<PrescribedMedicines>();
+    List<ProcedureTest> procedureTests=new ArrayList<ProcedureTest>();
+    List<ProcedureDailyLog> procedureLogs=new ArrayList<ProcedureDailyLog>();
     private String procedureType; // "single" or "scheduled"
     MedicalProcedure selectedProcedure;
+    private String doctorId;
+    private String procedureId;
+    private List<MedicalProcedure> scheduledProcedures;
+
+    // ✅ Getters & setters
+    public String getDoctorId() {
+        return doctorId;
+    }
+
+    public void setDoctorId(String doctorId) {
+        this.doctorId = doctorId;
+    }
+
+    public String getProcedureId() {
+        return procedureId;
+    }
+
+    public void setProcedureId(String procedureId) {
+        this.procedureId = procedureId;
+    }
+
+    public List<MedicalProcedure> getScheduledProcedures() {
+        return scheduledProcedures;
+    }
+
     public String getProcedureType() {
         return procedureType;
     }
@@ -68,56 +99,54 @@ public class ProcedureController {
         FacesContext context = FacesContext.getCurrentInstance();
         boolean isValid = true;
 
-        // Validate Recipient Existence
-        Recipient recipient = providerDao.searchRecipientByHealthId(medicalProcedure.getRecipient().gethId());
-        if (recipient == null) {
+        String hId = medicalProcedure.getRecipient().gethId();
+        Recipient recipient = providerDao.searchRecipientByHealthId(hId);
+        if (recipient == null || !recipient.gethId().equalsIgnoreCase(hId)) {
             context.addMessage("recipientId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Invalid Patient", "Recipient with given Health ID not found."));
             context.validationFailed();
             isValid = false;
         }
 
-        // Validate Provider Existence
-        Provider provider = providerDao.searchProviderById(medicalProcedure.getProvider().getProviderId());
-        if (provider == null) {
+        String providerId = medicalProcedure.getProvider().getProviderId();
+        Provider provider = providerDao.searchProviderById(providerId);
+        if (provider == null || !provider.getProviderId().equalsIgnoreCase(providerId)) {
             context.addMessage("providerId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Invalid Provider", "Provider with given ID not found."));
             context.validationFailed();
             isValid = false;
         }
 
-        // Validate Doctor Existence
-        Doctor doctor = providerDao.searchDoctorById(medicalProcedure.getDoctor().getDoctorId());
-        if (doctor == null) {
+        String doctorId = medicalProcedure.getDoctor().getDoctorId();
+        Doctor doctor = providerDao.searchDoctorById(doctorId);
+        if (doctor == null || !doctor.getDoctorId().equalsIgnoreCase(doctorId)) {
             context.addMessage("doctorId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Invalid Doctor", "Doctor with given ID not found."));
             context.validationFailed();
             isValid = false;
         }
 
-        // Validate Appointment Existence and Association
-        Appointment appointment = providerDao.searchAppointmentById(medicalProcedure.getAppointment().getAppointmentId());
-        if (appointment == null) {
+        String appointmentId = medicalProcedure.getAppointment().getAppointmentId();
+        Appointment appointment = providerDao.searchAppointmentById(appointmentId);
+        if (appointment == null || !appointment.getAppointmentId().equalsIgnoreCase(appointmentId)) {
             context.addMessage("appointmentId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Invalid Appointment", "Appointment with given ID not found."));
             context.validationFailed();
             isValid = false;
         } else {
-            if (!appointment.getProvider().getProviderId().equals(medicalProcedure.getProvider().getProviderId())) {
+            if (!appointment.getProvider().getProviderId().equalsIgnoreCase(providerId)) {
                 context.addMessage("providerId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                         "Mismatch", "This appointment does not belong to the selected provider."));
                 context.validationFailed();
                 isValid = false;
             }
-
-            if (!appointment.getDoctor().getDoctorId().equals(medicalProcedure.getDoctor().getDoctorId())) {
+            if (!appointment.getDoctor().getDoctorId().equalsIgnoreCase(doctorId)) {
                 context.addMessage("doctorId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                         "Mismatch", "This appointment does not involve the selected doctor."));
                 context.validationFailed();
                 isValid = false;
             }
-
-            if (!appointment.getRecipient().gethId().equals(medicalProcedure.getRecipient().gethId())) {
+            if (!appointment.getRecipient().gethId().equalsIgnoreCase(hId)) {
                 context.addMessage("recipientId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                         "Mismatch", "This appointment is not for the selected patient."));
                 context.validationFailed();
@@ -125,7 +154,14 @@ public class ProcedureController {
             }
         }
 
-        // Procedure Date Validation
+        // Validate Diagnosis
+        if (medicalProcedure.getDiagnosis() == null || medicalProcedure.getDiagnosis().trim().length() < 2) {
+            context.addMessage("diagnosis", new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Invalid Diagnosis", "Diagnosis must contain at least 2 letters."));
+            context.validationFailed();
+            isValid = false;
+        }
+
         Date procedureDate = medicalProcedure.getProcedureDate();
         Date today = new Date();
         if (procedureDate == null) {
@@ -140,76 +176,68 @@ public class ProcedureController {
             isValid = false;
         }
 
-        if (!isValid) {
-            return null;
-        }
+        if (!isValid) return null;
 
-        // Set single-day specific properties
         medicalProcedure.setFromDate(null);
         medicalProcedure.setToDate(null);
         medicalProcedure.setScheduledDate(null);
         medicalProcedure.setType(ProcedureType.SINGLE_DAY);
         medicalProcedure.setProcedureStatus(ProcedureStatus.COMPLETED);
-        // Persist using EJB
-        String res = providerEjb.addMedicalProcedure(medicalProcedure);
-        this.procedure = null;
-        return res;
+        return "ProcedureDashboard?faces-redirect=true";
     }
     public String addScheduledMedicalProcedureController(MedicalProcedure medicalProcedure) throws ClassNotFoundException, SQLException {
         providerDao = new ProviderDaoImpl();
         FacesContext context = FacesContext.getCurrentInstance();
         boolean isValid = true;
 
-        // Validate Recipient Existence
-        Recipient recipient = providerDao.searchRecipientByHealthId(medicalProcedure.getRecipient().gethId());
-        if (recipient == null) {
+        String hId = medicalProcedure.getRecipient().gethId();
+        Recipient recipient = providerDao.searchRecipientByHealthId(hId);
+        if (recipient == null || !recipient.gethId().equalsIgnoreCase(hId)) {
             context.addMessage("recipientId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Invalid Patient", "Recipient with given Health ID not found."));
             context.validationFailed();
             isValid = false;
         }
 
-        // Validate Provider Existence
-        Provider provider = providerDao.searchProviderById(medicalProcedure.getProvider().getProviderId());
-        if (provider == null) {
+        String providerId = medicalProcedure.getProvider().getProviderId();
+        Provider provider = providerDao.searchProviderById(providerId);
+        if (provider == null || !provider.getProviderId().equalsIgnoreCase(providerId)) {
             context.addMessage("providerId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Invalid Provider", "Provider with given ID not found."));
             context.validationFailed();
             isValid = false;
         }
 
-        // Validate Doctor Existence
-        Doctor doctor = providerDao.searchDoctorById(medicalProcedure.getDoctor().getDoctorId());
-        if (doctor == null) {
+        String doctorId = medicalProcedure.getDoctor().getDoctorId();
+        Doctor doctor = providerDao.searchDoctorById(doctorId);
+        if (doctor == null || !doctor.getDoctorId().equalsIgnoreCase(doctorId)) {
             context.addMessage("doctorId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Invalid Doctor", "Doctor with given ID not found."));
             context.validationFailed();
             isValid = false;
         }
 
-        // Validate Appointment Existence and Association
-        Appointment appointment = providerDao.searchAppointmentById(medicalProcedure.getAppointment().getAppointmentId());
-        if (appointment == null) {
+        String appointmentId = medicalProcedure.getAppointment().getAppointmentId();
+        Appointment appointment = providerDao.searchAppointmentById(appointmentId);
+        if (appointment == null || !appointment.getAppointmentId().equalsIgnoreCase(appointmentId)) {
             context.addMessage("appointmentId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Invalid Appointment", "Appointment with given ID not found."));
             context.validationFailed();
             isValid = false;
         } else {
-            if (!appointment.getProvider().getProviderId().equals(medicalProcedure.getProvider().getProviderId())) {
+            if (!appointment.getProvider().getProviderId().equalsIgnoreCase(providerId)) {
                 context.addMessage("providerId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                         "Mismatch", "This appointment does not belong to the selected provider."));
                 context.validationFailed();
                 isValid = false;
             }
-
-            if (!appointment.getDoctor().getDoctorId().equals(medicalProcedure.getDoctor().getDoctorId())) {
+            if (!appointment.getDoctor().getDoctorId().equalsIgnoreCase(doctorId)) {
                 context.addMessage("doctorId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                         "Mismatch", "This appointment does not involve the selected doctor."));
                 context.validationFailed();
                 isValid = false;
             }
-
-            if (!appointment.getRecipient().gethId().equals(medicalProcedure.getRecipient().gethId())) {
+            if (!appointment.getRecipient().gethId().equalsIgnoreCase(hId)) {
                 context.addMessage("recipientId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                         "Mismatch", "This appointment is not for the selected patient."));
                 context.validationFailed();
@@ -217,7 +245,14 @@ public class ProcedureController {
             }
         }
 
-        // Validate Scheduled Date (must be in future)
+        // Validate Diagnosis
+        if (medicalProcedure.getDiagnosis() == null || medicalProcedure.getDiagnosis().trim().length() < 2) {
+            context.addMessage("diagnosis", new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Invalid Diagnosis", "Diagnosis must contain at least 2 letters."));
+            context.validationFailed();
+            isValid = false;
+        }
+
         Date scheduledDate = medicalProcedure.getScheduledDate();
         Date today = new Date();
         if (scheduledDate == null) {
@@ -232,76 +267,72 @@ public class ProcedureController {
             isValid = false;
         }
 
-        if (!isValid) {
-            return null;
-        }
+        if (!isValid) return null;
 
-        // Set Scheduled Procedure-specific values
-        medicalProcedure.setProcedureDate(null); // Not yet performed
+        medicalProcedure.setProcedureDate(null);
         medicalProcedure.setFromDate(null);
         medicalProcedure.setToDate(null);
-        medicalProcedure.setType(ProcedureType.LONG_TERM); // Still single-day
+        medicalProcedure.setType(ProcedureType.LONG_TERM);
         medicalProcedure.setProcedureStatus(ProcedureStatus.SCHEDULED);
-        // Persist using EJB
+
         String res = providerEjb.addMedicalProcedure(medicalProcedure);
         this.procedure = null;
         return res;
     }
+
     public String addInProgressMedicalProcedureController(MedicalProcedure medicalProcedure) throws ClassNotFoundException, SQLException {
         providerDao = new ProviderDaoImpl();
         FacesContext context = FacesContext.getCurrentInstance();
         boolean isValid = true;
 
-        // Validate Recipient
-        Recipient recipient = providerDao.searchRecipientByHealthId(medicalProcedure.getRecipient().gethId());
-        if (recipient == null) {
+        String hId = medicalProcedure.getRecipient().gethId();
+        Recipient recipient = providerDao.searchRecipientByHealthId(hId);
+        if (recipient == null || !recipient.gethId().equalsIgnoreCase(hId)) {
             context.addMessage("recipientId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Invalid Patient", "Recipient with given Health ID not found."));
             context.validationFailed();
             isValid = false;
         }
 
-        // Validate Provider
-        Provider provider = providerDao.searchProviderById(medicalProcedure.getProvider().getProviderId());
-        if (provider == null) {
+        String providerId = medicalProcedure.getProvider().getProviderId();
+        Provider provider = providerDao.searchProviderById(providerId);
+        if (provider == null || !provider.getProviderId().equalsIgnoreCase(providerId)) {
             context.addMessage("providerId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Invalid Provider", "Provider with given ID not found."));
             context.validationFailed();
             isValid = false;
         }
 
-        // Validate Doctor
-        Doctor doctor = providerDao.searchDoctorById(medicalProcedure.getDoctor().getDoctorId());
-        if (doctor == null) {
+        String doctorId = medicalProcedure.getDoctor().getDoctorId();
+        Doctor doctor = providerDao.searchDoctorById(doctorId);
+        if (doctor == null || !doctor.getDoctorId().equalsIgnoreCase(doctorId)) {
             context.addMessage("doctorId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Invalid Doctor", "Doctor with given ID not found."));
             context.validationFailed();
             isValid = false;
         }
 
-        // Validate Appointment
-        Appointment appointment = providerDao.searchAppointmentById(medicalProcedure.getAppointment().getAppointmentId());
-        if (appointment == null) {
+        String appointmentId = medicalProcedure.getAppointment().getAppointmentId();
+        Appointment appointment = providerDao.searchAppointmentById(appointmentId);
+        if (appointment == null || !appointment.getAppointmentId().equalsIgnoreCase(appointmentId)) {
             context.addMessage("appointmentId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Invalid Appointment", "Appointment with given ID not found."));
             context.validationFailed();
             isValid = false;
         } else {
-            if (!appointment.getProvider().getProviderId().equals(medicalProcedure.getProvider().getProviderId())) {
+            if (!appointment.getProvider().getProviderId().equalsIgnoreCase(providerId)) {
                 context.addMessage("providerId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                         "Mismatch", "This appointment does not belong to the selected provider."));
                 context.validationFailed();
                 isValid = false;
             }
-
-            if (!appointment.getDoctor().getDoctorId().equals(medicalProcedure.getDoctor().getDoctorId())) {
+            if (!appointment.getDoctor().getDoctorId().equalsIgnoreCase(doctorId)) {
                 context.addMessage("doctorId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                         "Mismatch", "This appointment does not involve the selected doctor."));
                 context.validationFailed();
                 isValid = false;
             }
-
-            if (!appointment.getRecipient().gethId().equals(medicalProcedure.getRecipient().gethId())) {
+            if (!appointment.getRecipient().gethId().equalsIgnoreCase(hId)) {
                 context.addMessage("recipientId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                         "Mismatch", "This appointment is not for the selected patient."));
                 context.validationFailed();
@@ -309,34 +340,31 @@ public class ProcedureController {
             }
         }
 
-        if (!isValid) {
-            return null;
+        // Validate Diagnosis
+        if (medicalProcedure.getDiagnosis() == null || medicalProcedure.getDiagnosis().trim().length() < 2) {
+            context.addMessage("diagnosis", new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                    "Invalid Diagnosis", "Diagnosis must contain at least 2 letters."));
+            context.validationFailed();
+            isValid = false;
         }
 
-        // Set all irrelevant date fields to null explicitly
-        medicalProcedure.setScheduledDate(null);      // not used for in-progress
-        medicalProcedure.setProcedureDate(null);      // not used for in-progress
-        medicalProcedure.setToDate(null);             // optional, could be set later if long-term
-        medicalProcedure.setType(ProcedureType.LONG_TERM); // Still single-day
+        if (!isValid) return null;
+
+        medicalProcedure.setScheduledDate(null);
+        medicalProcedure.setProcedureDate(null);
+        medicalProcedure.setToDate(null);
+        medicalProcedure.setType(ProcedureType.LONG_TERM);
         medicalProcedure.setProcedureStatus(ProcedureStatus.IN_PROGRESS);
-        String res = providerEjb.addMedicalProcedure(medicalProcedure);
-        this.procedure = null;
-        return res;
+        return "LongTermProcedureDashboard?faces-redirect=true";
     }
 
     public String addTestController(ProcedureTest procedureTest) throws ClassNotFoundException, SQLException {
+    	  procedureTests.removeIf(p -> p.getTestId().equals(procedureTest.getTestId()));
         FacesContext context = FacesContext.getCurrentInstance();
         Map<String, Object> sessionMap = context.getExternalContext().getSessionMap();
         providerDao = new ProviderDaoImpl();
 
-        String prescriptionId = (String) sessionMap.get("prescriptionId");
-        procedureTest.getPrescription().setPrescriptionId(prescriptionId);
-
-        // Fetch prescription writtenOn and procedure endDate
-        Date writtenOn = providerDao.getPrescriptionWrittenOnDate(prescriptionId);
-        String procedureId = (String) sessionMap.get("procedureId"); // assume stored in session
-        Date procedureEndDate = providerDao.getProcedureEndDate(procedureId);
-
+      procedureTest.setPrescription(prescription);
         // 1. Validate Test Name
         String testName = procedureTest.getTestName();
         if (testName == null || testName.trim().length() < 2 || !testName.matches("^[a-zA-Z0-9 ()/\\-.]+$")) {
@@ -355,17 +383,8 @@ public class ProcedureController {
             return null;
         }
 
-        // Get prescription start and end dates
-        List<Date> prescriptionDates = providerDao.getPrescriptionDates(prescriptionId);
-        if (prescriptionDates == null || prescriptionDates.size() != 2 ||
-            prescriptionDates.get(0) == null || prescriptionDates.get(1) == null) {
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Could not retrieve valid prescription dates for test date validation.", null));
-            return null;
-        }
-
-        Date prescriptionStart = prescriptionDates.get(0);
-        Date prescriptionEnd = prescriptionDates.get(1);
+        Date prescriptionStart =prescription.getStartDate();
+        Date prescriptionEnd =prescription.getEndDate();
 
         if (testDate.before(prescriptionStart)) {
             context.addMessage("testDate", new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -387,38 +406,39 @@ public class ProcedureController {
                     "Result summary is required.", null));
             return null;
         }
+      
+        procedureTests.add(procedureTest);
+        return "PrescriptionDashboard?faces-redirect=true";
+        }
 
-        return providerEjb.addTest(procedureTest);
-    }
 
 
-
-    public String addPresribedMedicinesController(PrescribedMedicines prescribedMedicines)
+    public String addPresribedMedicinesController(PrescribedMedicines prescribedMedicine)
             throws ClassNotFoundException, SQLException {
-
+    	   prescribedMedicines.removeIf(p -> p.getPrescribedId().equals(prescribedMedicine.getPrescribedId()));
         FacesContext context = FacesContext.getCurrentInstance();
         Map<String, Object> sessionMap = context.getExternalContext().getSessionMap();
         providerDao = new ProviderDaoImpl();
+        prescribedMedicine.setPrescription(prescription);
 
-        String prescriptionId = (String) sessionMap.get("prescriptionId");
-        prescribedMedicines.getPrescription().setPrescriptionId(prescriptionId);
-
-        // 1. Medicine Name Validation
-        String medicineName = prescribedMedicines.getMedicineName();
+     // 1. Medicine Name Validation
+        String medicineName = prescribedMedicine.getMedicineName();
         if (medicineName == null || !medicineName.matches("^[a-zA-Z0-9()\\-+/'. ]{2,50}$")) {
             context.addMessage("medicineName", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Medicine name must be 2–50 characters and can include letters, digits, -, /, +, (), '.', and spaces.", null));
             return null;
         }
-
+     
         // Normalize medicine name
         medicineName = medicineName.trim().replaceAll("\\s+", " ");
-        prescribedMedicines.setMedicineName(medicineName);
-
-        // 2. Check for duplicate medicine in same prescription
-        List<String> existingMedicineNames = providerDao.getMedicineNamesByPrescriptionId(prescriptionId);
-        for (String existingName : existingMedicineNames) {
-            if (existingName.equalsIgnoreCase(medicineName)) {
+        prescribedMedicine.setMedicineName(medicineName);
+        // 3. Check for duplicate medicine in same prescription
+        for (PrescribedMedicines existingMed : prescribedMedicines) {
+            if (existingMed.getPrescription() != null &&
+                existingMed.getPrescription().getPrescriptionId().equals(prescription.getPrescriptionId()) &&
+                existingMed.getMedicineName() != null &&
+                existingMed.getMedicineName().equalsIgnoreCase(medicineName)) {
+                
                 context.addMessage("medicineName", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                         "This medicine is already prescribed in this prescription.", null));
                 return null;
@@ -426,14 +446,14 @@ public class ProcedureController {
         }
 
         // 3. Dosage Validation
-        String dosage = prescribedMedicines.getDosage();
+        String dosage = prescribedMedicine.getDosage();
         if (dosage == null || dosage.trim().isEmpty()) {
             context.addMessage("dosage", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Dosage is required.", null));
             return null;
         }
 
-        MedicineType type = prescribedMedicines.getType();
+        MedicineType type = prescribedMedicine.getType();
         String pattern;
 
         switch (type) {
@@ -462,18 +482,10 @@ public class ProcedureController {
         }
 
         // 4. Fetch Prescription Dates
-        List<Date> prescriptionDates = providerDao.getPrescriptionDates(prescriptionId);
-        if (prescriptionDates == null || prescriptionDates.size() != 2 ||
-            prescriptionDates.get(0) == null || prescriptionDates.get(1) == null) {
-            context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Could not retrieve valid prescription dates for validation.", null));
-            return null;
-        }
-
-        Date prescriptionStart = prescriptionDates.get(0);
-        Date prescriptionEnd = prescriptionDates.get(1);
-        Date medStart = prescribedMedicines.getStartDate();
-        Date medEnd = prescribedMedicines.getEndDate();
+        Date prescriptionStart = prescription.getStartDate();
+        Date prescriptionEnd = prescription.getEndDate();
+        Date medStart = prescribedMedicine.getStartDate();
+        Date medEnd = prescribedMedicine.getEndDate();
 
      // 5. Validate Medicine Date Range
         if (medStart == null) {
@@ -521,7 +533,7 @@ public class ProcedureController {
         long dayDiff = (medEnd.getTime() - medStart.getTime()) / (1000 * 60 * 60 * 24) + 1;
 
         try {
-            int durationDays = Integer.parseInt(prescribedMedicines.getDuration().trim());
+            int durationDays = Integer.parseInt(prescribedMedicine.getDuration().trim());
 
             if (durationDays != dayDiff) {
                 context.addMessage("duration", new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -533,35 +545,17 @@ public class ProcedureController {
                     "Duration must be a valid integer number.", null));
             return null;
         }
-
-        // ✅ All validations passed
-        return providerEjb.addPrescribedMedicines(prescribedMedicines);
+        prescribedMedicines.add(prescribedMedicine);
+        return"PrescriptionDashboard?faces-resirect=true";
     }
 
     public String addPrescriptionController(Prescription prescription) throws ClassNotFoundException, SQLException {
-    	System.out.println("prescription controller called");
-        providerDao = new ProviderDaoImpl();
-        FacesContext context = FacesContext.getCurrentInstance();
-        Map<String, Object> sessionMap = context.getExternalContext().getSessionMap();
-
-        // Set reference entities
-        MedicalProcedure procedure = new MedicalProcedure();
-        String procedureId = (String) sessionMap.get("procedureId");
-        procedure.setProcedureId(procedureId);
+    	 prescriptions.removeIf(p -> p.getPrescriptionId().equals(prescription.getPrescriptionId()));
+    	 FacesContext context = FacesContext.getCurrentInstance();
         prescription.setProcedure(procedure);
-
-        Provider provider = new Provider();
-        provider.setProviderId((String) sessionMap.get("providerId"));
-        prescription.setProvider(provider);
-
-        Doctor doctor = new Doctor();
-        doctor.setDoctorId((String) sessionMap.get("doctorId"));
-        prescription.setDoctor(doctor);
-
-        Recipient recipient = new Recipient();
-        recipient.sethId((String) sessionMap.get("recipientHid"));
-        prescription.setRecipient(recipient);
-
+        prescription.setProvider(procedure.getProvider());
+        prescription.setDoctor(procedure.getDoctor());
+        prescription.setRecipient(procedure.getRecipient());
         // Validate writtenOn field
         if (prescription.getWrittenOn() == null) {
             context.addMessage("writtenOn", new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -569,12 +563,15 @@ public class ProcedureController {
             return null;
         }
 
-        // ✅ Fetch procedure details
-        ProcedureType procedureType = (ProcedureType) sessionMap.get("procedureType");
-        ProcedureStatus procedureStatus = (ProcedureStatus) sessionMap.get("procedureStatus");
+        // Normalize writtenOn date
+        Date writtenOn =Converter.truncateTime(prescription.getWrittenOn());
 
-        Date procedureDate = (Date) sessionMap.get("procedureDate"); // for SINGLE_DAY
-        Date fromDate = (Date) sessionMap.get("fromDate");           // for LONG_TERM + IN_PROGRESS
+        // ✅ Fetch procedure details
+        ProcedureType procedureType = procedure.getType();
+        ProcedureStatus procedureStatus = procedure.getProcedureStatus();
+
+        Date procedureDate = procedure.getProcedureDate(); // for SINGLE_DAY
+        Date fromDate = procedure.getFromDate();         // for LONG_TERM + IN_PROGRESS
 
         if (procedureType == null) {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -589,19 +586,24 @@ public class ProcedureController {
                         "Missing Procedure Date for SINGLE_DAY procedure ID: " + procedureId, null));
                 return null;
             }
-            if (!prescription.getWrittenOn().equals(procedureDate)) {
+
+            Date truncatedProcedureDate = Converter.truncateTime(procedureDate);
+
+            if (!writtenOn.equals(truncatedProcedureDate)) {
                 context.addMessage("writtenOn", new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                        "Written On date (" + prescription.getWrittenOn() +
-                                ") must exactly match the Procedure Date (" + procedureDate + ").", null));
+                        "Written On date (" + writtenOn +
+                                ") must exactly match the Procedure Date (" + truncatedProcedureDate + ").+ for single day procedures", null));
                 return null;
             }
         }
+
         System.out.println(fromDate);
         System.out.println(prescription.getWrittenOn());
-        // ✅ LONG_TERM + IN_PROGRESS: writtenOn must be after fromDate
         System.out.println("reached for validation of longterm in progress");
+
+        // ✅ LONG_TERM + IN_PROGRESS: writtenOn must be after fromDate
         if (procedureType == ProcedureType.LONG_TERM &&
-            procedureStatus == ProcedureStatus.IN_PROGRESS) {
+                procedureStatus == ProcedureStatus.IN_PROGRESS) {
 
             if (fromDate == null) {
                 context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -609,38 +611,52 @@ public class ProcedureController {
                 return null;
             }
 
-            if (!prescription.getWrittenOn().after(fromDate)) {
+            Date truncatedFromDate = Converter.truncateTime(fromDate);
+
+            if (writtenOn.before(truncatedFromDate)) {
                 context.addMessage("writtenOn", new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                        "Written On date (" + prescription.getWrittenOn() +
-                                ") must be after the Procedure From Date (" + fromDate + ") for long-term in-progress procedures.", null));
+                        "Written On date (" + writtenOn +
+                                ") must be after the Procedure From Date (" + truncatedFromDate + ") for long-term in-progress procedures.", null));
                 return null;
             }
         }
 
         // Validate prescription start and end dates
-        if (prescription.getStartDate().before(prescription.getWrittenOn())) {
+        Date startDate = Converter.truncateTime(prescription.getStartDate());
+        Date endDate = Converter.truncateTime(prescription.getEndDate());
+
+        if (startDate.before(writtenOn)) {
             context.addMessage("startDate", new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Prescription start date (" + prescription.getStartDate() +
-                            ") cannot be before the prescription written date (" + prescription.getWrittenOn() + ").", null));
+                    "Prescription start date (" + startDate +
+                            ") cannot be before the prescription written date (" + writtenOn + ").", null));
             return null;
         }
 
-        if (prescription.getEndDate().before(prescription.getStartDate())) {
+        if (endDate.before(startDate)) {
             context.addMessage("endDate", new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Prescription end date (" + prescription.getEndDate() +
-                            ") cannot be before the prescription start date (" + prescription.getStartDate() + ").", null));
+                    "Prescription end date (" + endDate +
+                            ") cannot be before the prescription start date (" + startDate + ").", null));
             return null;
         }
 
-        return providerEjb.addPrescription(prescription);
+        // Save the actual validated values back (optional but good for consistency)
+        prescription.setWrittenOn(writtenOn);
+        prescription.setStartDate(startDate);
+        prescription.setEndDate(endDate);
+        System.out.println(prescriptions);
+        System.out.println(prescription);
+        prescriptions.add(prescription);
+	    return "PrescriptionDashboard?faces-redirect=true";
+        
     }
+
     public String addProcedureLogController(ProcedureDailyLog procedureLog) throws ClassNotFoundException, SQLException {
+    	procedureLogs.removeIf(p -> p.getLogId().equals(procedureLog.getLogId()));
         FacesContext context = FacesContext.getCurrentInstance();
         Map<String, Object> sessionMap = context.getExternalContext().getSessionMap();
         providerDao = new ProviderDaoImpl();
 
-        String procedureId = (String) sessionMap.get("procedureId");
-        procedureLog.getMedicalProcedure().setProcedureId(procedureId);
+        procedureLog.setMedicalProcedure(procedure);
 
         // 1. Validate Log Date
         Date logDate = procedureLog.getLogDate();
@@ -651,14 +667,29 @@ public class ProcedureController {
         }
 
         // Get procedure fromDate
-        Date fromDate = (Date) sessionMap.get("fromDate");
+        Date fromDate = procedure.getFromDate();
         if (fromDate == null) {
             context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Unable to fetch procedure's start date for validation.", null));
             return null;
         }
 
-        if (logDate.before(fromDate)) {
+        // Truncate time parts of both dates before comparing
+        Calendar logCal = Calendar.getInstance();
+        logCal.setTime(logDate);
+        logCal.set(Calendar.HOUR_OF_DAY, 0);
+        logCal.set(Calendar.MINUTE, 0);
+        logCal.set(Calendar.SECOND, 0);
+        logCal.set(Calendar.MILLISECOND, 0);
+
+        Calendar fromCal = Calendar.getInstance();
+        fromCal.setTime(fromDate);
+        fromCal.set(Calendar.HOUR_OF_DAY, 0);
+        fromCal.set(Calendar.MINUTE, 0);
+        fromCal.set(Calendar.SECOND, 0);
+        fromCal.set(Calendar.MILLISECOND, 0);
+
+        if (logCal.getTime().before(fromCal.getTime())) {
             context.addMessage("logDate", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Log date (" + logDate + ") cannot be before procedure start date (" + fromDate + ").", null));
             return null;
@@ -671,6 +702,18 @@ public class ProcedureController {
             if (vitals.length() > 300) {
                 context.addMessage("vitals", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                         "Vitals should not exceed 300 characters.", null));
+                return null;
+            }
+            if (!vitals.matches("[a-zA-Z0-9:/.,\\s]+")) {
+                context.addMessage("vitals", new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        "Vitals can only contain letters, numbers, spaces, colon (:), slash (/), comma (,), and dot (.)", null));
+                return null;
+            }
+
+            // Rule 3: Should not be numeric only
+            if (vitals.matches("\\d+")) {
+                context.addMessage("vitals", new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        "Vitals cannot be only numeric. Please include proper labels like 'BP: 120/80'.", null));
                 return null;
             }
             procedureLog.setVitals(vitals);
@@ -693,10 +736,11 @@ public class ProcedureController {
 
         // 4. Set createdAt
         procedureLog.setCreatedAt(new Date());
-
-        // 5. Call EJB layer
-        return providerEjb.addProcedureLog(procedureLog);
+        
+        procedureLogs.add(procedureLog);
+        return"LongTermProcedureDashboard?faces-redirect=true";
     }
+
 
     public String createNewProcedure() throws ClassNotFoundException, SQLException {
         procedure = new MedicalProcedure();
@@ -740,40 +784,270 @@ public class ProcedureController {
 	public void setProcedureLog(ProcedureDailyLog procedureLog) {
 		this.procedureLog = procedureLog;
 	}
+	public String createNewPrescription() throws ClassNotFoundException, SQLException {
+	    prescription = new Prescription();
 
-	public String createNewPrescription() throws ClassNotFoundException, SQLException
-    {
-    	prescription =new Prescription();
-    	prescription.setPrescriptionId(providerEjb.generateNewPrescriptionId());
-    	return "AddPrescription?faces-redirect=true";
+	    if (prescriptions != null && !prescriptions.isEmpty()) {
+	        prescription.setPrescriptionId(ProcedureIdGenerator.getNextPrescriptionId(prescriptions));
+	    } else {
+	        prescription.setPrescriptionId(providerEjb.generateNewPrescriptionId());
+	    }
+
+	    return "AddPrescription?faces-redirect=true";
+	}
+	public String createNewPrescribedMedicine() throws ClassNotFoundException, SQLException {
+	    prescribedMedicine = new PrescribedMedicines();
+
+	    if (prescribedMedicines != null && !prescribedMedicines.isEmpty()) {
+	        prescribedMedicine.setPrescribedId(ProcedureIdGenerator.getNextPrescribedMedicineId(prescribedMedicines));
+	    } else {
+	        prescribedMedicine.setPrescribedId(providerEjb.generateNewPrescribedMedicineId());
+	    }
+
+	    return "AddPrescribedMedicine?faces-redirect=true";
+	}
+
+	public String createNewProcedureTest() throws ClassNotFoundException, SQLException {
+	    procedureTest = new ProcedureTest();
+
+	    if (procedureTests != null && !procedureTests.isEmpty()) {
+	        procedureTest.setTestId(ProcedureIdGenerator.getNextProcedureTestId(procedureTests));
+	    } else {
+	        procedureTest.setTestId(providerEjb.generateNewProcedureTestId());
+	    }
+
+	    return "AddTest?faces-redirect=true";
+	}
+	public String createNewProcedureLog() {
+	    procedureLog = new ProcedureDailyLog();
+
+	    if (procedureLogs != null && !procedureLogs.isEmpty()) {
+	        procedureLog.setLogId(ProcedureIdGenerator.getNextProcedureLogId(procedureLogs));
+	    } else {
+	        try {
+	            procedureLog.setLogId(providerEjb.generateNewProcedureLogId());
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            // Handle DB fallback error appropriately
+	        }
+	    }
+
+	    return "AddProcedureLog?faces-redirect=true";
+	}
+
+    public String fetchScheduledProceduresController() {
+        providerDao = new ProviderDaoImpl();
+        allScheduledProcedures = null;
+        scheduledProcedures = null;
+
+        if (doctorId == null || doctorId.trim().isEmpty()) {
+            FacesContext.getCurrentInstance().addMessage("doctorId",
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Doctor ID is required", null));
+            return null;
+        }
+
+        Doctor doctor = providerDao.searchDoctorById(doctorId);
+        if (doctor == null) {
+            FacesContext.getCurrentInstance().addMessage("doctorId",
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Doctor with ID " + doctorId + " does not exist.", null));
+            return null;
+        }
+
+        List<MedicalProcedure> procedures;
+        if (procedureId != null && !procedureId.trim().isEmpty()) {
+            procedures = providerEjb.getScheduledProceduresByDoctor(doctorId, procedureId);
+            if (procedures.isEmpty()) {
+                FacesContext.getCurrentInstance().addMessage("procedureId",
+                    new FacesMessage(FacesMessage.SEVERITY_WARN,
+                        "No scheduled procedure found with ID " + procedureId + " for Doctor ID " + doctorId, null));
+                return null;
+            }
+        } else {
+            procedures = providerEjb.getScheduledProceduresByDoctor(doctorId, null);
+            if (procedures.isEmpty()) {
+                FacesContext.getCurrentInstance().addMessage("doctorId",
+                    new FacesMessage(FacesMessage.SEVERITY_INFO,
+                        "No scheduled procedures found for Doctor ID " + doctorId, null));
+            }
+        }
+
+        allScheduledProcedures = procedures;
+        currentPage = 1;
+        paginate();
+        return null;
     }
-    public String createNewPrescribedMedicine() throws ClassNotFoundException, SQLException
-    {
-    	prescribedMedicines =new PrescribedMedicines();
-    	prescribedMedicines.setPrescribedId(providerEjb.generateNewPrescribedMedicineId());
-    	return "AddPrescribedMedicine?faces-redirect=true";
+    public void paginate() {
+        if (allScheduledProcedures == null) return;
+
+        int total = allScheduledProcedures.size();
+        totalPages = (int) Math.ceil((double) total / pageSize);
+        int fromIndex = (currentPage - 1) * pageSize;
+        int toIndex = Math.min(fromIndex + pageSize, total);
+
+        scheduledProcedures = allScheduledProcedures.subList(fromIndex, toIndex);
     }
-    public String createNewProcedureTest() throws ClassNotFoundException, SQLException
-    {
-    	procedureTest =new ProcedureTest();
-    	procedureTest.setTestId(providerEjb.generateNewProcedureTestId());
-    	return "AddTest?faces-redirect=true";
+    public void nextPage() {
+        if (currentPage < totalPages) {
+            currentPage++;
+            paginate();
+        }
     }
-    public String createNewProcedureLog()
-    {
-     procedureLog=new ProcedureDailyLog();
-     procedureLog.setLogId(providerEjb.generateNewProcedureLogId());
-     return "AddProcedureLog?faces-redirect=true";
-    	
+
+    public void previousPage() {
+        if (currentPage > 1) {
+            currentPage--;
+            paginate();
+        }
     }
-    public List<MedicalProcedure> getScheduledProceduresController()
-    {
-    	System.out.println("in controller");
-    	
-    	List<MedicalProcedure> updated= providerEjb.getScheduledProcedures();
-    	System.out.println(updated);
-    	return updated;
+    public boolean hasPreviousPage() {
+        return currentPage > 1;
     }
+
+    public boolean hasNextPage() {
+        return currentPage < totalPages;
+    }
+    public void goToFirstPage() {
+        currentPage = 1;
+        paginate();  // refresh the current page content
+    }
+
+    public void goToLastPage() {
+        currentPage = totalPages > 0 ? totalPages : 1;
+        paginate();  // refresh the current page content
+    }
+
+
+
+// Optional: or stay on same page if no navigation
+    private List<MedicalProcedure> allScheduledProcedures; // complete data for sorting
+
+    public List<MedicalProcedure> getAllScheduledProcedures() {
+		return allScheduledProcedures;
+	}
+
+	public void setAllScheduledProcedures(List<MedicalProcedure> allScheduledProcedures) {
+		this.allScheduledProcedures = allScheduledProcedures;
+	}
+
+	public int getCurrentPage() {
+		return currentPage;
+	}
+
+	public void setCurrentPage(int currentPage) {
+		this.currentPage = currentPage;
+	}
+
+	public int getPageSize() {
+		return pageSize;
+	}
+
+	public void setPageSize(int pageSize) {
+		this.pageSize = pageSize;
+	}
+
+	public int getTotalPages() {
+		return totalPages;
+	}
+
+	public void setTotalPages(int totalPages) {
+		this.totalPages = totalPages;
+	}
+
+	public void setScheduledProcedures(List<MedicalProcedure> scheduledProcedures) {
+		this.scheduledProcedures = scheduledProcedures;
+	}
+	private int currentPage = 1;
+    private int pageSize = 3;
+    private int totalPages;
+        private String sortField;
+        private boolean sortAscending = true;
+        // Getters and Setters for sorting
+        public String getSortField() {
+            return sortField;
+        }
+
+        public void setSortField(String sortField) {
+            this.sortField = sortField;
+        }
+
+        public boolean isSortAscending() {
+            return sortAscending;
+        }
+
+        public void setSortAscending(boolean sortAscending) {
+            this.sortAscending = sortAscending;
+        }
+        // Sorting logic
+        public void sortBy(String field) {
+            if (field.equals(sortField)) {
+                sortAscending = !sortAscending; // toggle direction
+            } else {
+                sortField = field;
+                sortAscending = true; // default ascending on new field
+            }
+
+            Comparator<MedicalProcedure> comparator = getComparatorForField(field);
+            if (comparator != null && allScheduledProcedures != null) {
+                if (!sortAscending) {
+                    comparator = comparator.reversed();
+                }
+                allScheduledProcedures.sort(comparator);
+                currentPage = 1;
+                paginate();
+            }
+        }
+
+
+        // Comparator mapping for each field
+        private Comparator<MedicalProcedure> getComparatorForField(String field) {
+            switch (field) {
+                case "procedureId":
+                    return Comparator.comparing(MedicalProcedure::getProcedureId);
+                case "scheduledDate":
+                    return Comparator.comparing(MedicalProcedure::getScheduledDate);
+                case "recipientFirstName":
+                    return Comparator.comparing(p -> p.getRecipient().getFirstName(), Comparator.nullsLast(String::compareTo));
+                case "recipientLastName":
+                    return Comparator.comparing(p -> p.getRecipient().getLastName(), Comparator.nullsLast(String::compareTo));
+                case "doctorName":
+                    return Comparator.comparing(p -> p.getDoctor().getDoctorName(), Comparator.nullsLast(String::compareTo));
+                case "providerName":
+                    return Comparator.comparing(p -> p.getProvider().getName(), Comparator.nullsLast(String::compareTo));
+                case "appointmentId":
+                    return Comparator.comparing(p -> p.getAppointment().getAppointmentId());
+                default:
+                    return null;
+            }
+        }
+
+        public String resetPage() {
+            // Reset form input fields
+            this.doctorId = null;
+            this.procedureId = null;
+
+            // Clear data lists
+            this.allScheduledProcedures = null;
+            this.scheduledProcedures = null;
+
+            // Reset sorting
+            this.sortField = null;
+            this.sortAscending = true;
+
+            // Reset pagination
+            this.currentPage = 1;
+            this.totalPages = 1;
+            this.pageSize = 10; // or your default page size
+
+            // Optional: reset internal tracking states if any
+            this.selectedProcedure = null;
+           
+            // Clear JSF view tree to force reload
+            FacesContext.getCurrentInstance().getViewRoot().getChildren().clear();
+
+            // Redirect to the same page to reset everything
+            return "scheduledProcedures?faces-redirect=true";
+        }
+
 	public List<MedicalProcedure> getInProgressProcedures()
 	{
 		return providerEjb.getInProgressProcedures();
@@ -796,28 +1070,121 @@ public class ProcedureController {
 		this.prescription = prescription;
 	}
 
-	public PrescribedMedicines getPrescribedMedicines() {
-		return prescribedMedicines;
+	public PrescribedMedicines getPrescribedMedicine() {
+		return prescribedMedicine;
 	}
 
-	public void setPrescribedMedicines(PrescribedMedicines prescribedMedicines) {
-		this.prescribedMedicines = prescribedMedicines;
+	public void setPrescribedMedicine(PrescribedMedicines prescribedMedicine) {
+		this.prescribedMedicine = prescribedMedicine;
 	}
 
 	public ProcedureTest getProcedureTest() {
 		return procedureTest;
 	}
 
+	public List<Prescription> getPrescriptions() {
+		return prescriptions;
+	}
+
+	public void setPrescriptions(List<Prescription> prescriptions) {
+		this.prescriptions = prescriptions;
+	}
+
+	public List<PrescribedMedicines> getPrescribedMedicines() {
+		return prescribedMedicines;
+	}
+
+	public void setPrescribedMedicines(List<PrescribedMedicines> prescribedMedicines) {
+		this.prescribedMedicines = prescribedMedicines;
+	}
+
+	public List<ProcedureTest> getProcedureTests() {
+		return procedureTests;
+	}
+
+	public void setProcedureTests(List<ProcedureTest> procedureTests) {
+		this.procedureTests = procedureTests;
+	}
+
+	public List<ProcedureDailyLog> getProcedureLogs() {
+		return procedureLogs;
+	}
+
+	public void setProcedureLogs(List<ProcedureDailyLog> procedureLogs) {
+		this.procedureLogs = procedureLogs;
+	}
+
 	public void setProcedureTest(ProcedureTest procedureTest) {
 		this.procedureTest = procedureTest;
 	}
 
-    public String procedureSubmit() {
-        return "ProviderDashboard?faces-redirect=true";
-    }
+	public String procedureSubmit() {
+	    try {
+	        // Step 1: Save the procedure
+	    	if(providerEjb.generateNewProcedureId().equals(procedure.getProcedureId()))
+	    	{
+	      providerEjb.addMedicalProcedure(procedure);
+	        // Step 2: Set the saved procedure reference in each related object and save them
+	    	}
+	        // Save prescriptions
+	        for (Prescription p : prescriptions) {
+	          // assuming there's a `procedure` field in Prescription
+	            providerEjb.addPrescription(p);
+	        }
+
+	        // Save prescribed medicines
+	        for (PrescribedMedicines pm : prescribedMedicines) {
+	             // or use p.setPrescription() if it's linked through prescription
+	            providerEjb.addPrescribedMedicines(pm);
+	        }
+
+	        // Save tests
+	        for (ProcedureTest test : procedureTests) {
+	            providerEjb.addTest(test);
+	        }
+	        if(procedure.getType()==ProcedureType.LONG_TERM)
+	        	
+	        {
+	        // Save logs
+	        for (ProcedureDailyLog log : procedureLogs) {
+	         
+	            providerEjb.addProcedureLog(log);
+	        }
+	        }
+	        // Step 3: Clear the session-level data (optional if session-scope controller)
+	        procedure=null;
+	        prescription=null;
+	        prescriptions.clear();
+	        
+	       prescribedMedicine=null;
+	       prescribedMedicines.clear();
+	       procedureTest=null;
+	       procedureTests.clear();
+	       procedureLog=null;
+	       procedureLogs.clear();
+	    		   
+
+	        // Step 4: Redirect to dashboard
+	        return "ProviderDashboard?faces-redirect=true";
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return "ErrorPage?faces-redirect=true";
+	    }
+	}
+
 
     public String prescriptionDetailsSubmit() {
-        return "ProcedureDashboard?faces-redirect=true";
+    	String result="";
+    	if(procedure.getProcedureStatus()==ProcedureStatus.COMPLETED && procedure.getType()==ProcedureType.SINGLE_DAY)
+    	{
+        result="ProcedureDashboard?faces-redirect=true";
+    	}
+    	if(procedure.getProcedureStatus()==ProcedureStatus.IN_PROGRESS && procedure.getType()==ProcedureType.LONG_TERM)
+    	{
+    		result="LongTermProcedureDashboard?faces-redirect=true";
+    	}
+    	return result;
     }
     public String startProcedure(MedicalProcedure procedure) {
         System.out.println("in start procedure controller");
@@ -837,15 +1204,7 @@ public class ProcedureController {
         this.selectedProcedure = fullProc;
         System.out.println("procedure set: " + selectedProcedure);
 
-        // 5. Store required values in session
-        Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
-        sessionMap.put("procedureId", fullProc.getProcedureId());
-        sessionMap.put("providerId", fullProc.getProvider().getProviderId());
-        sessionMap.put("doctorId", fullProc.getDoctor().getDoctorId());
-        sessionMap.put("recipientHid", fullProc.getRecipient().gethId());
-        sessionMap.put("fromDate", fullProc.getFromDate());
-        sessionMap.put("procedureType", fullProc.getType()); // ⬅️ newly added
-        sessionMap.put("procedureStatus", fullProc.getProcedureStatus()); // ⬅️ newly added
+       this.procedure=fullProc;
 
         // 6. Redirect to prescription entry page
         return "ViewProcedureDetails?faces-redirect=true";  // update path if needed
@@ -880,7 +1239,7 @@ public class ProcedureController {
         this.selectedProcedure = fullProc;
 
         // 6. Redirect to confirmation or listing page
-        return "ProviderDashboard?faces-redirect=true";
+        return "ShowOnGoingProcedures?faces-redirect=true";
     }
 
 	public MedicalProcedure getSelectedProcedure() {
@@ -896,16 +1255,7 @@ public class ProcedureController {
 	    // 1. Reload full procedure from DB using ID
 	    MedicalProcedure fullProc = providerEjb.getProcedureById(p.getProcedureId());
 	    System.out.println("obtained procedure is " + fullProc);
-
-	    // 2. Store required values in session
-	    Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
-	    sessionMap.put("procedureId", fullProc.getProcedureId());
-	    sessionMap.put("providerId", fullProc.getProvider().getProviderId());
-	    sessionMap.put("doctorId", fullProc.getDoctor().getDoctorId());
-	    sessionMap.put("recipientHid", fullProc.getRecipient().gethId());
-	    sessionMap.put("fromDate", fullProc.getFromDate());
-	    sessionMap.put("procedureType", fullProc.getType());
-	    sessionMap.put("procedureStatus", fullProc.getProcedureStatus());
+this.procedure=fullProc;
 
 	    // 4. Redirect to the appropriate dashboard
 	    return "LongTermProcedureDashboard?faces-redirect=true";  // Change path if needed

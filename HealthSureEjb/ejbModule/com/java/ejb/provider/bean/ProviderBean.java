@@ -83,9 +83,9 @@ public class ProviderBean implements ProviderBeanRemote {
 	}
 
 	@Override
-	public List<MedicalProcedure> getScheduledProcedures() {
+	public List<MedicalProcedure> getScheduledProceduresByDoctor(String doctorId, String procedureId) {
 		// TODO Auto-generated method stub
-		return providerDao.getScheduledProcedures();
+		return providerDao.getScheduledProceduresByDoctor(doctorId,procedureId);
 	}
 
 	@Override

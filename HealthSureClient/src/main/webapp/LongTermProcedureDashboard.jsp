@@ -69,7 +69,7 @@
                                      styleClass="nav-button" />
 
                     <h:commandButton value="Done"
-                                     action="ProviderDashboard"
+                                     action="#{procedureController.procedureSubmit()}"
                                      styleClass="nav-button" />
                 </div>
             </h:form>

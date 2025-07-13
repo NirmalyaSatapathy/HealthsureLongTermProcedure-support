@@ -96,7 +96,7 @@
             <!-- Procedure ID (readonly from session) -->
             <div class="form-group">
                 <h:outputLabel for="procedureId" value="Procedure ID:" />
-                <h:inputText id="procedureId" value="#{sessionScope.procedureId}" readonly="true" />
+                <h:inputText id="procedureId" value="#{procedureController.procedure.procedureId}" readonly="true" />
             </div>
             <div class="form-group">
                 <h:outputLabel for="logId" value="Log ID:" />

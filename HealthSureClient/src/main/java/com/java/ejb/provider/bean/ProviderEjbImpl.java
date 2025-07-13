@@ -30,55 +30,36 @@ public class ProviderEjbImpl {
 	}
 
 	public String addMedicalProcedure(MedicalProcedure medicalProcedure) throws ClassNotFoundException, SQLException {
-	    // Store key fields in session map
-	    Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
-
-	    sessionMap.put("procedureId", medicalProcedure.getProcedureId());
-	    sessionMap.put("providerId", medicalProcedure.getProvider().getProviderId());
-	    sessionMap.put("doctorId", medicalProcedure.getDoctor().getDoctorId());
-	    sessionMap.put("recipientHid", medicalProcedure.getRecipient().gethId());
-	    sessionMap.put("procedureType", medicalProcedure.getType());
-	    sessionMap.put("procedureStatus", medicalProcedure.getProcedureStatus());
-	    // Conditionally store dates based on status
 	    if (medicalProcedure.getType() == ProcedureType.LONG_TERM && medicalProcedure.getProcedureStatus()==ProcedureStatus.SCHEDULED) {
-	        sessionMap.put("scheduledDate", medicalProcedure.getScheduledDate());
-	        remote.addMedicalProcedure(medicalProcedure);
-		    return "ProviderDashboard?faces-redirect=true";
+		      remote.addMedicalProcedure(medicalProcedure);
+		      return "ProcedureOptions";
 	    } else if (medicalProcedure.getType() == ProcedureType.SINGLE_DAY) {
-	        sessionMap.put("procedureDate", medicalProcedure.getProcedureDate());
-	        remote.addMedicalProcedure(medicalProcedure);
-		    return "ProcedureDashboard?faces-redirect=true";
+		    return remote.addMedicalProcedure(medicalProcedure);
 	    }
 	    else if(medicalProcedure.getType() == ProcedureType.LONG_TERM && medicalProcedure.getProcedureStatus() == ProcedureStatus.IN_PROGRESS)
 	    {
-	    	 sessionMap.put("fromDate", medicalProcedure.getFromDate());
-		        remote.addMedicalProcedure(medicalProcedure);
-			    return "LongTermProcedureDashboard?faces-redirect=true";
+			    return  remote.addMedicalProcedure(medicalProcedure);
 	    }
 	    // Save to database via EJB
 	   return null;
 	}
 
 	public String addPrescription(Prescription prescription) throws ClassNotFoundException, SQLException {
-	    // Save via remote EJB
-		Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
-		sessionMap.put("prescriptionId",prescription.getPrescriptionId());
 		System.out.println("calling remote prescription");
-	    remote.addPrescription(prescription);
-	    System.out.println("prescription added");
-	    return "PrescriptionDashboard?faces-redirect=true";
+	    return remote.addPrescription(prescription);
+	    
 	}
 
 
 	public String addTest(ProcedureTest test) throws ClassNotFoundException, SQLException {
-		remote.addTest(test);
-		return "PrescriptionDashboard?faces-redirect=true";
+	
+		return 	remote.addTest(test);
 	}
 
 	public String addPrescribedMedicines(PrescribedMedicines prescribedMedicine)
 			throws ClassNotFoundException, SQLException {
-		remote.addPrescribedMedicines(prescribedMedicine);
-		return "PrescriptionDashboard?faces-redirect=true";
+		
+		return remote.addPrescribedMedicines(prescribedMedicine);
 	}
 	public String generateNewProcedureId() throws ClassNotFoundException, SQLException
 	{
@@ -100,9 +81,9 @@ public class ProviderEjbImpl {
 	{
 		return remote.generateNewProcedureLogId();
 	}
-	public List<MedicalProcedure> getScheduledProcedures()
+	public List<MedicalProcedure> getScheduledProceduresByDoctor(String doctorId, String procedureId)
 	{
-		return remote.getScheduledProcedures();
+		return remote.getScheduledProceduresByDoctor(doctorId, procedureId);
 	}
 	public List<MedicalProcedure> getInProgressProcedures()
 	{
@@ -120,7 +101,7 @@ public class ProviderEjbImpl {
 
 	public String addProcedureLog(ProcedureDailyLog procedureLog) {
 		// TODO Auto-generated method stub
-		remote.addProcedureDailyLog(procedureLog);
-		return "LongTermProcedureDashboard?faces-redirect=true";
+		
+		return remote.addProcedureDailyLog(procedureLog);
 	}
 }
