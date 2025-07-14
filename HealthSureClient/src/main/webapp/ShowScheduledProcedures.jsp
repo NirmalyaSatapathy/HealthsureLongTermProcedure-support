@@ -101,7 +101,8 @@
 <body>
     <h:form prependId="false">
         <h2>Search Scheduled Procedures</h2>
-
+       
+        <br>
         <div class="form-group">
             <label><span style="color: red;">*</span>Doctor ID:</label>
             <h:inputText id="doctorId" value="#{procedureController.doctorId}" />
@@ -117,10 +118,10 @@
         </div>
 
         <div class="form-group">
-            <h:commandButton value="Search" action="#{procedureController.fetchScheduledProceduresController}" />&nbsp;&nbsp;
-             <h:commandButton value="Reset" action="#{procedureController.resetPage()}" immediate="true" />
+            <h:commandButton value="Search" action="#{procedureController.fetchScheduledProceduresController()}" />&nbsp;&nbsp;
+             <h:commandButton value="Reset" action="#{procedureController.resetPage()}" immediate="true" />&nbsp;&nbsp;
+              <h:commandButton value="Go to Dashboard" action="#{procedureController.goToDashboard1()}"/>
         </div>
-
         <h:panelGroup rendered="#{not empty procedureController.scheduledProcedures}">
         <!-- Total Records Info -->
             <h:outputText value="Total: #{procedureController.allScheduledProcedures.size()} procedures" style="font-weight: bold;" />
@@ -230,6 +231,7 @@
 
           <!-- Pagination Controls -->
 <br/>
+
 <h:panelGrid columns="5" cellpadding="10">
 
     <h:commandButton value="First" action="#{procedureController.goToFirstPage()}" 

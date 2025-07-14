@@ -175,7 +175,7 @@
 
                 <div class="form-group full-width">
                     <h:outputLabel for="recommendations" value="Recommendations:"/>
-                    <h:inputTextarea id="recommendations" value="#{procedureController.selectedProcedure.recommendations}" />
+                    <h:inputTextarea id="recommendations" value="#{procedureController.selectedProcedure.recommendations}" readonly="true"/>
                     <h:message for="recommendations" styleClass="error-message" />
                 </div>
             </div>

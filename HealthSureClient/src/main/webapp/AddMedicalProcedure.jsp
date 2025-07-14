@@ -125,7 +125,7 @@
 
                 <div class="form-group">
                     <h:outputLabel for="appointmentId">
-                        Appointment ID: <span style="color:red">*</span>
+                        <span style="color:red">*</span>Appointment ID: 
                     </h:outputLabel>
                     <h:inputText id="appointmentId" value="#{procedureController.procedure.appointment.appointmentId}" required="true" />
                     <h:message for="appointmentId" styleClass="error-message" />
@@ -133,7 +133,7 @@
 
                 <div class="form-group">
                     <h:outputLabel for="recipientId">
-                        Patient (h_id): <span style="color:red">*</span>
+                      <span style="color:red">*</span>  Patient (h_id): 
                     </h:outputLabel>
                     <h:inputText id="recipientId" value="#{procedureController.procedure.recipient.hId}" required="true" />
                     <h:message for="recipientId" styleClass="error-message" />
@@ -141,7 +141,7 @@
 
                 <div class="form-group">
                     <h:outputLabel for="providerId">
-                        Provider ID: <span style="color:red">*</span>
+                       <span style="color:red">*</span>  Provider ID:
                     </h:outputLabel>
                     <h:inputText id="providerId" value="#{procedureController.procedure.provider.providerId}" required="true" />
                     <h:message for="providerId" styleClass="error-message" />
@@ -149,7 +149,7 @@
 
                 <div class="form-group">
                     <h:outputLabel for="doctorId">
-                        Doctor ID: <span style="color:red">*</span>
+                       <span style="color:red">*</span> Doctor ID: 
                     </h:outputLabel>
                     <h:inputText id="doctorId" value="#{procedureController.procedure.doctor.doctorId}" required="true" />
                     <h:message for="doctorId" styleClass="error-message" />
@@ -157,7 +157,7 @@
 
                 <div class="form-group">
                     <h:outputLabel for="procedureDate">
-                        Procedure Date: <span style="color:red">*</span>
+                       <span style="color:red">*</span>  Procedure Date:
                     </h:outputLabel>
                     <h:inputText id="procedureDate" value="#{procedureController.procedure.procedureDate}" readonly="true">
                         <f:convertDateTime pattern="yyyy-MM-dd" />
@@ -167,7 +167,7 @@
 
                 <div class="form-group full-width">
                     <h:outputLabel for="diagnosis">
-                        Diagnosis: <span style="color:red">*</span>
+                       <span style="color:red">*</span>  Diagnosis:
                     </h:outputLabel>
                     <h:inputTextarea id="diagnosis" value="#{procedureController.procedure.diagnosis}" required="true" />
                     <h:message for="diagnosis" styleClass="error-message" />
@@ -188,7 +188,7 @@
     <h:commandButton value="Reset Form"
                      styleClass="blue-button"
                      action="#{procedureController.createNewProcedure()}"
-                     immediate="true" />
+                      />
 </div>
 
 

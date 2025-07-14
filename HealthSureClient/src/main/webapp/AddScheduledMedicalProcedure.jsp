@@ -188,7 +188,7 @@
                 <h:commandButton value="Reset Form"
                                  styleClass="blue-button"
                                  action="#{procedureController.createNewProcedure()}"
-                                 immediate="true" />
+                                  />
             </div>
         </h:form>
     </div>

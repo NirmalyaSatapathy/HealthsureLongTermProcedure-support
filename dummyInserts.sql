@@ -425,6 +425,72 @@ VALUES
 ('PROC018', 'APP018', 'H008', 'PROV001', 'DOC002', '2023-10-16', 'Sports physical', 'Cleared for participation'),
 ('PROC019', 'APP019', 'H009', 'PROV001', 'DOC002', '2023-10-16', 'Nutrition counseling', 'Diet plan provided'),
 ('PROC020', 'APP020', 'H010', 'PROV001', 'DOC002', '2023-10-16', 'Developmental screening', 'Normal milestones achieved');
+-- Single-day procedures IN_PROGRESS (25 rows)
+INSERT INTO medical_procedure (procedure_id, appointment_id, h_id, provider_id, doctor_id, procedure_date, diagnosis, recommendations, procedure_type, procedure_status) VALUES
+('PROC021', 'APP001', 'H001', 'PROV001', 'DOC001', '2023-10-17', 'Hypertension follow-up', 'Continue medication, reduce salt intake', 'SINGLE_DAY', 'IN_PROGRESS'),
+('PROC022', 'APP002', 'H002', 'PROV001', 'DOC001', '2023-10-17', 'Cholesterol check', 'Continue statins, increase exercise', 'SINGLE_DAY', 'IN_PROGRESS'),
+('PROC023', 'APP003', 'H003', 'PROV001', 'DOC001', '2023-10-17', 'Diabetes management', 'Adjust insulin dosage', 'SINGLE_DAY', 'IN_PROGRESS'),
+('PROC024', 'APP004', 'H004', 'PROV001', 'DOC001', '2023-10-17', 'Post-angioplasty check', 'Monitor for complications', 'SINGLE_DAY', 'IN_PROGRESS'),
+('PROC025', 'APP005', 'H005', 'PROV001', 'DOC001', '2023-10-17', 'Arrhythmia monitoring', 'Continue beta blockers', 'SINGLE_DAY', 'IN_PROGRESS'),
+('PROC026', 'APP006', 'H006', 'PROV001', 'DOC001', '2023-10-17', 'Asthma exacerbation', 'Increase inhaler use temporarily', 'SINGLE_DAY', 'IN_PROGRESS'),
+('PROC027', 'APP007', 'H007', 'PROV001', 'DOC001', '2023-10-17', 'Heart failure assessment', 'Adjust diuretics dosage', 'SINGLE_DAY', 'IN_PROGRESS'),
+('PROC028', 'APP008', 'H008', 'PROV001', 'DOC001', '2023-10-17', 'Angina evaluation', 'Consider stress test', 'SINGLE_DAY', 'IN_PROGRESS'),
+('PROC029', 'APP009', 'H009', 'PROV001', 'DOC001', '2023-10-17', 'PAD follow-up', 'Monitor walking tolerance', 'SINGLE_DAY', 'IN_PROGRESS'),
+('PROC030', 'APP010', 'H010', 'PROV001', 'DOC001', '2023-10-17', 'AFib management', 'Check INR levels', 'SINGLE_DAY', 'IN_PROGRESS'),
+('PROC031', 'APP011', 'H001', 'PROV001', 'DOC002', '2023-10-17', 'Pediatric vaccination', 'Administer flu vaccine', 'SINGLE_DAY', 'IN_PROGRESS'),
+('PROC032', 'APP012', 'H002', 'PROV001', 'DOC002', '2023-10-17', 'Child wellness check', 'Assess growth milestones', 'SINGLE_DAY', 'IN_PROGRESS'),
+('PROC033', 'APP013', 'H003', 'PROV001', 'DOC002', '2023-10-17', 'Ear infection follow-up', 'Check for resolution', 'SINGLE_DAY', 'IN_PROGRESS'),
+('PROC034', 'APP014', 'H004', 'PROV001', 'DOC002', '2023-10-17', 'Allergy follow-up', 'Evaluate immunotherapy options', 'SINGLE_DAY', 'IN_PROGRESS'),
+('PROC035', 'APP015', 'H005', 'PROV001', 'DOC002', '2023-10-17', 'Infant wellness', 'Discuss feeding schedule', 'SINGLE_DAY', 'IN_PROGRESS'),
+('PROC036', 'APP016', 'H006', 'PROV001', 'DOC002', '2023-10-17', 'ADHD medication review', 'Adjust dosage as needed', 'SINGLE_DAY', 'IN_PROGRESS'),
+('PROC037', 'APP017', 'H007', 'PROV001', 'DOC002', '2023-10-17', 'Asthma control', 'Review peak flow readings', 'SINGLE_DAY', 'IN_PROGRESS'),
+('PROC038', 'APP018', 'H008', 'PROV001', 'DOC002', '2023-10-17', 'Sports injury', 'Evaluate ankle sprain', 'SINGLE_DAY', 'IN_PROGRESS'),
+('PROC039', 'APP019', 'H009', 'PROV001', 'DOC002', '2023-10-17', 'Nutrition follow-up', 'Review dietary changes', 'SINGLE_DAY', 'IN_PROGRESS'),
+('PROC040', 'APP020', 'H010', 'PROV001', 'DOC002', '2023-10-17', 'Developmental assessment', 'Evaluate speech progress', 'SINGLE_DAY', 'IN_PROGRESS'),
+('PROC041', 'APP001', 'H001', 'PROV001', 'DOC001', '2023-10-18', 'Hypertension crisis', 'Emergency blood pressure management', 'SINGLE_DAY', 'IN_PROGRESS'),
+('PROC042', 'APP002', 'H002', 'PROV001', 'DOC001', '2023-10-18', 'Lipid panel review', 'Discuss results', 'SINGLE_DAY', 'IN_PROGRESS'),
+('PROC043', 'APP003', 'H003', 'PROV001', 'DOC001', '2023-10-18', 'Diabetes education', 'Carb counting session', 'SINGLE_DAY', 'IN_PROGRESS'),
+('PROC044', 'APP004', 'H004', 'PROV001', 'DOC001', '2023-10-18', 'Cardiac rehab session', 'Supervised exercise', 'SINGLE_DAY', 'IN_PROGRESS'),
+('PROC045', 'APP005', 'H005', 'PROV001', 'DOC001', '2023-10-18', 'Arrhythmia episode', 'Emergency EKG', 'SINGLE_DAY', 'IN_PROGRESS');
+
+-- Long-term procedures IN_PROGRESS (10 rows) - with from_date and procedure_status='IN_PROGRESS'
+INSERT INTO medical_procedure (procedure_id, appointment_id, h_id, provider_id, doctor_id, from_date, to_date, diagnosis, recommendations, procedure_type, procedure_status) VALUES
+('PROC046', 'APP001', 'H001', 'PROV001', 'DOC001', '2023-10-01 09:00:00', '2023-12-31 17:00:00', 'Chronic hypertension management', 'Monthly follow-ups needed', 'LONG_TERM', 'IN_PROGRESS'),
+('PROC047', 'APP002', 'H002', 'PROV001', 'DOC001', '2023-09-15 10:00:00', '2024-03-15 17:00:00', 'Hyperlipidemia treatment', 'Quarterly lipid panels required', 'LONG_TERM', 'IN_PROGRESS'),
+('PROC048', 'APP003', 'H003', 'PROV001', 'DOC001', '2023-10-10 08:00:00', '2024-10-10 17:00:00', 'Type 2 diabetes management', 'Continuous glucose monitoring', 'LONG_TERM', 'IN_PROGRESS'),
+('PROC049', 'APP004', 'H004', 'PROV001', 'DOC001', '2023-09-01 11:00:00', '2024-09-01 17:00:00', 'Post-cardiac surgery rehab', 'Weekly physical therapy', 'LONG_TERM', 'IN_PROGRESS'),
+('PROC050', 'APP005', 'H005', 'PROV001', 'DOC001', '2023-08-01 14:00:00', '2024-02-01 17:00:00', 'Chronic arrhythmia treatment', 'Regular Holter monitoring', 'LONG_TERM', 'IN_PROGRESS'),
+('PROC051', 'APP006', 'H006', 'PROV001', 'DOC001', '2023-10-05 10:00:00', '2024-04-05 17:00:00', 'Severe asthma management', 'Biologic therapy regimen', 'LONG_TERM', 'IN_PROGRESS'),
+('PROC052', 'APP007', 'H007', 'PROV001', 'DOC001', '2023-07-01 09:00:00', '2024-07-01 17:00:00', 'Congestive heart failure', 'Monthly cardiac assessments', 'LONG_TERM', 'IN_PROGRESS'),
+('PROC053', 'APP008', 'H008', 'PROV001', 'DOC001', '2023-09-20 13:00:00', '2024-03-20 17:00:00', 'Stable angina management', 'Gradual exercise program', 'LONG_TERM', 'IN_PROGRESS'),
+('PROC054', 'APP009', 'H009', 'PROV001', 'DOC001', '2023-10-01 08:00:00', '2024-01-01 17:00:00', 'Peripheral artery disease', 'Supervised walking program', 'LONG_TERM', 'IN_PROGRESS'),
+('PROC055', 'APP010', 'H010', 'PROV001', 'DOC001', '2023-08-15 11:00:00', '2024-08-15 17:00:00', 'Chronic atrial fibrillation', 'Anticoagulation therapy', 'LONG_TERM', 'IN_PROGRESS');
+
+-- Long-term procedures SCHEDULED (15 rows) - with scheduled_date and procedure_status='SCHEDULED'
+INSERT INTO medical_procedure (procedure_id, appointment_id, h_id, provider_id, doctor_id, scheduled_date, diagnosis, recommendations, procedure_type, procedure_status) VALUES
+('PROC056', 'APP001', 'H001', 'PROV001', 'DOC001', '2023-11-15', 'Hypertension annual review', 'Prepare lab results for review', 'LONG_TERM', 'SCHEDULED'),
+('PROC057', 'APP002', 'H002', 'PROV001', 'DOC001', '2023-11-20', 'Cholesterol annual check', 'Fasting required before appointment', 'LONG_TERM', 'SCHEDULED'),
+('PROC058', 'APP003', 'H003', 'PROV001', 'DOC001', '2023-12-01', 'Diabetes comprehensive exam', 'Bring glucose logs', 'LONG_TERM', 'SCHEDULED'),
+('PROC059', 'APP004', 'H004', 'PROV001', 'DOC001', '2023-11-10', 'Cardiac rehab assessment', 'Wear exercise clothing', 'LONG_TERM', 'SCHEDULED'),
+('PROC060', 'APP005', 'H005', 'PROV001', 'DOC001', '2023-12-15', 'Arrhythmia follow-up', 'Bring event monitor data', 'LONG_TERM', 'SCHEDULED'),
+('PROC061', 'APP006', 'H006', 'PROV001', 'DOC001', '2024-01-05', 'Asthma control evaluation', 'Complete symptom questionnaire', 'LONG_TERM', 'SCHEDULED'),
+('PROC062', 'APP007', 'H007', 'PROV001', 'DOC001', '2023-11-30', 'Heart failure monitoring', 'Weigh daily before appointment', 'LONG_TERM', 'SCHEDULED'),
+('PROC063', 'APP008', 'H008', 'PROV001', 'DOC001', '2024-02-15', 'Angina management review', 'Track nitroglycerin use', 'LONG_TERM', 'SCHEDULED'),
+('PROC064', 'APP009', 'H009', 'PROV001', 'DOC001', '2023-12-10', 'PAD vascular assessment', 'Wear comfortable shoes', 'LONG_TERM', 'SCHEDULED'),
+('PROC065', 'APP010', 'H010', 'PROV001', 'DOC001', '2024-03-01', 'AFib annual review', 'Prepare INR records', 'LONG_TERM', 'SCHEDULED'),
+('PROC066', 'APP011', 'H001', 'PROV001', 'DOC002', '2023-11-05', 'Pediatric vaccination schedule', 'Prepare for next round of shots', 'LONG_TERM', 'SCHEDULED'),
+('PROC067', 'APP012', 'H002', 'PROV001', 'DOC002', '2024-01-15', 'Annual pediatric wellness', 'Complete developmental forms', 'LONG_TERM', 'SCHEDULED'),
+('PROC068', 'APP013', 'H003', 'PROV001', 'DOC002', '2023-12-20', 'Chronic ear infection follow-up', 'Monitor for recurrence', 'LONG_TERM', 'SCHEDULED'),
+('PROC069', 'APP014', 'H004', 'PROV001', 'DOC002', '2024-02-01', 'Allergy immunotherapy review', 'Track symptom frequency', 'LONG_TERM', 'SCHEDULED'),
+('PROC070', 'APP015', 'H005', 'PROV001', 'DOC002', '2023-11-25', 'Infant milestone assessment', 'Bring growth records', 'LONG_TERM', 'SCHEDULED'),
+('PROC071', 'APP015', 'H005', 'PROV001', 'DOC002', '2023-11-25', 'Infant milestone assessment', 'Bring growth records', 'LONG_TERM', 'SCHEDULED'),
+('PROC072', 'APP015', 'H005', 'PROV001', 'DOC002', '2023-11-25', 'Infant milestone assessment', 'Bring growth records', 'LONG_TERM', 'SCHEDULED'),
+('PROC073', 'APP015', 'H005', 'PROV001', 'DOC002', '2023-11-25', 'Infant milestone assessment', 'Bring growth records', 'LONG_TERM', 'SCHEDULED'),
+('PROC074', 'APP010', 'H010', 'PROV001', 'DOC001', '2024-03-01', 'AFib annual review', 'Prepare INR records', 'LONG_TERM', 'SCHEDULED'),
+('PROC075', 'APP010', 'H010', 'PROV001', 'DOC001', '2024-03-01', 'AFib annual review', 'Prepare INR records', 'LONG_TERM', 'SCHEDULED'),
+('PROC076', 'APP010', 'H010', 'PROV001', 'DOC001', '2024-03-01', 'AFib annual review', 'Prepare INR records', 'LONG_TERM', 'SCHEDULED');
+
+
 -- Insert prescriptions
 INSERT INTO prescription (prescription_id, procedure_id, h_id, provider_id, doctor_id, written_on, start_date, end_date)
 VALUES

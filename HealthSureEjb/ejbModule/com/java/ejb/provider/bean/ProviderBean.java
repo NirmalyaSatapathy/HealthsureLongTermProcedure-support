@@ -88,11 +88,7 @@ public class ProviderBean implements ProviderBeanRemote {
 		return providerDao.getScheduledProceduresByDoctor(doctorId,procedureId);
 	}
 
-	@Override
-	public List<MedicalProcedure> getInProgressProcedures() {
-		// TODO Auto-generated method stub
-		return providerDao.getInProgressProcedures();
-	}
+	
 
 	@Override
 	public String updateProcedureStatus(MedicalProcedure procedure) {
@@ -116,6 +112,12 @@ public class ProviderBean implements ProviderBeanRemote {
 	public String addProcedureDailyLog(ProcedureDailyLog log) throws ClassNotFoundException, SQLException {
 		// TODO Auto-generated method stub
 		return providerDao.addProcedureDailyLog(log);
+	}
+
+	@Override
+	public List<MedicalProcedure> getInProgressProceduresByDoctor(String doctorId, String procedureId) {
+		// TODO Auto-generated method stub
+		return providerDao.getInProgressProceduresByDoctor(doctorId, procedureId);
 	}
 
 }

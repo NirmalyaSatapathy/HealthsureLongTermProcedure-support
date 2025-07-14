@@ -20,6 +20,19 @@
             font-size: 30px;
             margin: 20px 0;
         }
+       .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        .error {
+            color: red;
+            font-size: 12px;
+            margin-left: 10px;
+        }
 
         .data-table {
             width: 100%;
@@ -29,14 +42,16 @@
 
         .data-table th,
         .data-table td {
-            padding: 12px;
+            padding: 14px;
             text-align: left;
             border: 1px solid #ddd;
         }
 
         .data-table th {
             background-color: #3f51b5;
-            color: white;
+            color: #ffffff;
+            font-weight: bold;
+            white-space: nowrap;
         }
 
         .data-table td {
@@ -50,10 +65,6 @@
 
         .data-table tr:hover {
             background-color: #ddd;
-        }
-
-        center {
-            margin-bottom: 30px;
         }
 
         @media (max-width: 600px) {
@@ -70,76 +81,100 @@
     </style>
 </head>
 <body>
+<h:form prependId="false">
+        <h2>Search on-going Procedures</h2>
 
-<h2>In-Progress Procedures</h2>
+        <div class="form-group">
+            <label><span style="color: red;">*</span>Doctor ID:</label>
+            <h:inputText id="doctorId" value="#{procedureController.doctorId}" />
+            <br/>
+            <h:message for="doctorId" styleClass="error" />
+        </div>
 
-<h:form>
-    <h:dataTable value="#{procedureController.getInProgressProcedures()}" var="p" styleClass="data-table">
+        <div class="form-group">
+            <label>Procedure ID (optional):</label>
+            <h:inputText id="procedureId" value="#{procedureController.procedureId}" />
+            <br/>
+            <h:message for="procedureId" styleClass="error" />
+        </div>
 
-        <h:column>
-            <f:facet name="header">
-                <h:outputText value="Appointment ID" />
-            </f:facet>
-            <h:outputText value="#{p.appointment.appointmentId}" />
-        </h:column>
+        <div class="form-group">
+            <h:commandButton value="Search" action="#{procedureController.fetchInProgressProceduresController()}" />&nbsp;&nbsp;
+            
+            <h:commandButton value="Reset" action="#{procedureController.resetSearchForm()}" immediate="true" />&nbsp;&nbsp;
+            <h:commandButton value="Go to Dashboard" action="#{procedureController.goToDashboard2()}"/>
+        </div>
 
-        <h:column>
-            <f:facet name="header">
-                <h:outputText value="Procedure ID" />
-            </f:facet>
-            <h:outputText value="#{p.procedureId}" />
-        </h:column>
+    <h:panelGroup rendered="#{not empty procedureController.allInProgressProcedures}">
+        <h:outputText value="Total: #{procedureController.allInProgressProcedures.size()} procedures" style="font-weight: bold;" />
 
-        <h:column>
-            <f:facet name="header">
-                <h:outputText value="Recipient First Name" />
-            </f:facet>
-            <h:outputText value="#{p.recipient.firstName}" />
-        </h:column>
+        <h:dataTable value="#{procedureController.allInProgressProcedures}" var="p" styleClass="data-table">
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Appointment ID" />
+                </f:facet>
+                <h:outputText value="#{p.appointment.appointmentId}" />
+            </h:column>
 
-        <h:column>
-            <f:facet name="header">
-                <h:outputText value="Recipient Last Name" />
-            </f:facet>
-            <h:outputText value="#{p.recipient.lastName}" />
-        </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Procedure ID" />
+                </f:facet>
+                <h:outputText value="#{p.procedureId}" />
+            </h:column>
 
-        <h:column>
-            <f:facet name="header">
-                <h:outputText value="Doctor" />
-            </f:facet>
-            <h:outputText value="#{p.doctor.doctorName}" />
-        </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Recipient First Name" />
+                </f:facet>
+                <h:outputText value="#{p.recipient.firstName}" />
+            </h:column>
 
-        <h:column>
-            <f:facet name="header">
-                <h:outputText value="Provider" />
-            </f:facet>
-            <h:outputText value="#{p.provider.name}" />
-        </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Recipient Last Name" />
+                </f:facet>
+                <h:outputText value="#{p.recipient.lastName}" />
+            </h:column>
 
-        <h:column>
-            <f:facet name="header">
-                <h:outputText value="Started On" />
-            </f:facet>
-            <h:outputText value="#{p.fromDate}">
-                <f:convertDateTime pattern="yyyy-MM-dd" />
-            </h:outputText>
-        </h:column>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Doctor" />
+                </f:facet>
+                <h:outputText value="#{p.doctor.doctorName}" />
+            </h:column>
 
-        <h:column>
-            <f:facet name="header">
-                <h:outputText value="Add Details" />
-            </f:facet>
-            <h:commandButton value="Add Procedure Details" action="#{procedureController.goToAddProcedureDetails(p)}" />
-        </h:column>
-<h:column>
-            <f:facet name="header">
-                <h:outputText value="Action" />
-            </f:facet>
-            <h:commandButton value="Completed" action="#{procedureController.completeProcedure(p)}" />
-        </h:column>
-    </h:dataTable>
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Provider" />
+                </f:facet>
+                <h:outputText value="#{p.provider.name}" />
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Started On" />
+                </f:facet>
+                <h:outputText value="#{p.fromDate}">
+                    <f:convertDateTime pattern="yyyy-MM-dd" />
+                </h:outputText>
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Add Details" />
+                </f:facet>
+                <h:commandButton value="Add Procedure Details" action="#{procedureController.goToAddProcedureDetails(p)}" />
+            </h:column>
+
+            <h:column>
+                <f:facet name="header">
+                    <h:outputText value="Action" />
+                </f:facet>
+                <h:commandButton value="Completed" action="#{procedureController.completeProcedure(p)}" />
+            </h:column>
+        </h:dataTable>
+    </h:panelGroup>
 </h:form>
 
 </body>

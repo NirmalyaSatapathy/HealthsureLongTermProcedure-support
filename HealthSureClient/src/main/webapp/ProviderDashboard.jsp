@@ -73,7 +73,7 @@
 <body>
     <h:form>
         <div class="dashboard-container">
-            <h2>Welcome to Provider Main Dashboard</h2>
+            <h2>Welcome to Provider's Patient Dashboard</h2>
 
             <div class="button-row">
                 <h:commandButton value="Add New Procedure"

@@ -85,9 +85,9 @@ public class ProviderEjbImpl {
 	{
 		return remote.getScheduledProceduresByDoctor(doctorId, procedureId);
 	}
-	public List<MedicalProcedure> getInProgressProcedures()
+	public List<MedicalProcedure> getInProgressProceduresByDoctor(String doctorId, String procedureId)
 	{
-		return remote.getInProgressProcedures();
+		return remote.getInProgressProceduresByDoctor(doctorId, procedureId);
 	}
 	public String updateProcedureStatus(MedicalProcedure procedure)
 	{

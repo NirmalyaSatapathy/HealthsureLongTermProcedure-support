@@ -45,8 +45,16 @@ public class ProcedureController {
     private String doctorId;
     private String procedureId;
     private List<MedicalProcedure> scheduledProcedures;
+    private List<MedicalProcedure> allInProgressProcedures;
+    public List<MedicalProcedure> getAllInProgressProcedures() {
+		return allInProgressProcedures;
+	}
 
-    // ✅ Getters & setters
+	public void setAllInProgressProcedures(List<MedicalProcedure> allInProgressProcedures) {
+		this.allInProgressProcedures = allInProgressProcedures;
+	}
+
+	// ✅ Getters & setters
     public String getDoctorId() {
         return doctorId;
     }
@@ -769,9 +777,6 @@ public class ProcedureController {
                 new FacesMessage(FacesMessage.SEVERITY_ERROR, "Please select a procedure type.", null));
             return null;
         }
-
-        this.procedureType = null;
-
         System.out.println("______________________________________new procedure created with values " + procedure);
         return nextPage;
     }
@@ -1019,7 +1024,7 @@ public class ProcedureController {
                     return null;
             }
         }
-
+        //Scheduled Reset
         public String resetPage() {
             // Reset form input fields
             this.doctorId = null;
@@ -1035,8 +1040,8 @@ public class ProcedureController {
 
             // Reset pagination
             this.currentPage = 1;
-            this.totalPages = 1;
-            this.pageSize = 10; // or your default page size
+            this.totalPages = 0;
+            this.pageSize = 3; // or your default page size
 
             // Optional: reset internal tracking states if any
             this.selectedProcedure = null;
@@ -1045,13 +1050,92 @@ public class ProcedureController {
             FacesContext.getCurrentInstance().getViewRoot().getChildren().clear();
 
             // Redirect to the same page to reset everything
-            return "scheduledProcedures?faces-redirect=true";
+            return null;
         }
+        //In-progress reset
+        public String resetSearchForm() {
+            this.doctorId = null;
+            this.procedureId = null;
+            this.allInProgressProcedures = null; // Clear previous search results if needed
+            FacesContext.getCurrentInstance().getViewRoot().getChildren().clear();
+            return null; // Return the same page name for reload
+        }
+        //Scheduled back button
+        public String goToDashboard1()
+        {
+        	  this.doctorId = null;
+              this.procedureId = null;
 
-	public List<MedicalProcedure> getInProgressProcedures()
-	{
-		return providerEjb.getInProgressProcedures();
-	}
+              // Clear data lists
+              this.allScheduledProcedures = null;
+              this.scheduledProcedures = null;
+
+              // Reset sorting
+              this.sortField = null;
+              this.sortAscending = true;
+
+              // Reset pagination
+              this.currentPage = 1;
+              this.totalPages = 0;
+              this.pageSize = 3; // or your default page size
+
+              // Optional: reset internal tracking states if any
+              this.selectedProcedure = null;
+             
+              // Clear JSF view tree to force reload
+              FacesContext.getCurrentInstance().getViewRoot().getChildren().clear();
+
+             
+        	return "ProviderDashboard?faces-redirect=true";
+        }
+        //ongoing backbutton
+        public String goToDashboard2()
+        {
+        	this.doctorId = null;
+            this.procedureId = null;
+            this.allInProgressProcedures = null; // Clear previous search results if needed
+            FacesContext.getCurrentInstance().getViewRoot().getChildren().clear();
+            return "ProviderDashboard?faces-redirect=true";
+        }
+        public String fetchInProgressProceduresController() {
+            providerDao = new ProviderDaoImpl();
+            allInProgressProcedures = null;
+
+            if (doctorId == null || doctorId.trim().isEmpty()) {
+                FacesContext.getCurrentInstance().addMessage("doctorId",
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Doctor ID is required", null));
+                return null;
+            }
+
+            Doctor doctor = providerDao.searchDoctorById(doctorId);
+            if (doctor == null) {
+                FacesContext.getCurrentInstance().addMessage("doctorId",
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Doctor with ID " + doctorId + " does not exist.", null));
+                return null;
+            }
+
+            List<MedicalProcedure> procedures;
+            if (procedureId != null && !procedureId.trim().isEmpty()) {
+                procedures = providerEjb.getInProgressProceduresByDoctor(doctorId, procedureId);
+                if (procedures.isEmpty()) {
+                    FacesContext.getCurrentInstance().addMessage("procedureId",
+                        new FacesMessage(FacesMessage.SEVERITY_WARN,
+                            "No in-progress procedure found with ID " + procedureId + " for Doctor ID " + doctorId, null));
+                    return null;
+                }
+            } else {
+                procedures = providerEjb.getInProgressProceduresByDoctor(doctorId, null);
+                if (procedures.isEmpty()) {
+                    FacesContext.getCurrentInstance().addMessage("doctorId",
+                        new FacesMessage(FacesMessage.SEVERITY_INFO,
+                            "No in-progress procedures found for Doctor ID " + doctorId, null));
+                }
+            }
+
+            allInProgressProcedures = procedures;
+          
+            return null;
+        }
 
     public MedicalProcedure getProcedure() {
         return procedure;
@@ -1205,7 +1289,6 @@ public class ProcedureController {
         System.out.println("procedure set: " + selectedProcedure);
 
        this.procedure=fullProc;
-
         // 6. Redirect to prescription entry page
         return "ViewProcedureDetails?faces-redirect=true";  // update path if needed
     }
@@ -1237,7 +1320,7 @@ public class ProcedureController {
 
         // 5. Optional: set selectedProcedure
         this.selectedProcedure = fullProc;
-
+        this.fetchInProgressProceduresController();
         // 6. Redirect to confirmation or listing page
         return "ShowOnGoingProcedures?faces-redirect=true";
     }

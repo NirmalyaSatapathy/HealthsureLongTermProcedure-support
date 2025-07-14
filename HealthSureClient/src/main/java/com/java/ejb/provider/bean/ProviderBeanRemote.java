@@ -22,8 +22,8 @@ public String generateNewPrescriptionId() throws ClassNotFoundException, SQLExce
 public String generateNewPrescribedMedicineId() throws ClassNotFoundException, SQLException;
 public String generateNewProcedureTestId() throws ClassNotFoundException, SQLException;
 public String generateNewProcedureLogId();
-List<MedicalProcedure> getScheduledProceduresByDoctor(String doctorId, String procedureId);
-public List<MedicalProcedure> getInProgressProcedures();
+public List<MedicalProcedure> getScheduledProceduresByDoctor(String doctorId, String procedureId);
+public List<MedicalProcedure> getInProgressProceduresByDoctor(String doctorId, String procedureId);
 public String updateProcedureStatus(MedicalProcedure procedure);
 public MedicalProcedure getProcedureById(String id);
 public String addProcedureDailyLog(ProcedureDailyLog log);
