@@ -127,7 +127,7 @@
                     <h:outputLabel for="appointmentId">
                         <span style="color:red">*</span>Appointment ID: 
                     </h:outputLabel>
-                    <h:inputText id="appointmentId" value="#{procedureController.procedure.appointment.appointmentId}" required="true" />
+                    <h:inputText id="appointmentId" value="#{procedureController.procedure.appointment.appointmentId}" />
                     <h:message for="appointmentId" styleClass="error-message" />
                 </div>
 
@@ -135,7 +135,7 @@
                     <h:outputLabel for="recipientId">
                       <span style="color:red">*</span>  Patient (h_id): 
                     </h:outputLabel>
-                    <h:inputText id="recipientId" value="#{procedureController.procedure.recipient.hId}" required="true" />
+                    <h:inputText id="recipientId" value="#{procedureController.procedure.recipient.hId}" />
                     <h:message for="recipientId" styleClass="error-message" />
                 </div>
 
@@ -143,7 +143,7 @@
                     <h:outputLabel for="providerId">
                        <span style="color:red">*</span>  Provider ID:
                     </h:outputLabel>
-                    <h:inputText id="providerId" value="#{procedureController.procedure.provider.providerId}" required="true" />
+                    <h:inputText id="providerId" value="#{procedureController.procedure.provider.providerId}"/>
                     <h:message for="providerId" styleClass="error-message" />
                 </div>
 
@@ -151,7 +151,7 @@
                     <h:outputLabel for="doctorId">
                        <span style="color:red">*</span> Doctor ID: 
                     </h:outputLabel>
-                    <h:inputText id="doctorId" value="#{procedureController.procedure.doctor.doctorId}" required="true" />
+                    <h:inputText id="doctorId" value="#{procedureController.procedure.doctor.doctorId}"/>
                     <h:message for="doctorId" styleClass="error-message" />
                 </div>
 
@@ -169,7 +169,7 @@
                     <h:outputLabel for="diagnosis">
                        <span style="color:red">*</span>  Diagnosis:
                     </h:outputLabel>
-                    <h:inputTextarea id="diagnosis" value="#{procedureController.procedure.diagnosis}" required="true" />
+                    <h:inputTextarea id="diagnosis" value="#{procedureController.procedure.diagnosis}"/>
                     <h:message for="diagnosis" styleClass="error-message" />
                 </div>
 

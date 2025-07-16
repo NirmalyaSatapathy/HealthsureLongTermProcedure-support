@@ -108,7 +108,7 @@
                 <h:outputLabel for="logDate">
                     Log Date (yyyy-MM-dd): <span style="color:red">*</span>
                 </h:outputLabel>
-                <h:inputText id="logDate" value="#{procedureController.procedureLog.logDate}" required="true">
+                <h:inputText id="logDate" value="#{procedureController.procedureLog.logDate}">
                     <f:convertDateTime pattern="yyyy-MM-dd" />
                 </h:inputText>
                 <h:message for="logDate" styleClass="error-message" />
@@ -126,7 +126,7 @@
                 <h:outputLabel for="notes">
                     Notes: <span style="color:red">*</span>
                 </h:outputLabel>
-                <h:inputTextarea id="notes" value="#{procedureController.procedureLog.notes}" rows="4" cols="50" required="true" />
+                <h:inputTextarea id="notes" value="#{procedureController.procedureLog.notes}" rows="4" cols="50" />
                 <h:message for="notes" styleClass="error-message" />
             </div>
 

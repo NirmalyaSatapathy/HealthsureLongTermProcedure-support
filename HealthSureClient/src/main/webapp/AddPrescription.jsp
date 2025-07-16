@@ -127,11 +127,11 @@
             </div>
 
             <div class="form-group" style="grid-column: span 2;">
-                <h:outputLabel for="writtenOn">
+                <h:outputLabel for="writtenOn" rendered="#{procedureController.procedure.type ne 'SINGLE_DAY'}">
                     Written On (Date): <span style="color:red">*</span>
                 </h:outputLabel>
-                <h:inputText id="writtenOn" value="#{procedureController.prescription.writtenOn}"
-                             required="true" requiredMessage="Written On date is required.">
+                <h:inputText id="writtenOn" value="#{procedureController.prescription.writtenOn}" rendered="#{procedureController.procedure.type ne 'SINGLE_DAY'}"
+                             >
                     <f:convertDateTime pattern="yyyy-MM-dd" />
                 </h:inputText>
                 <h:message for="writtenOn" styleClass="error-message" />
@@ -141,7 +141,7 @@
                 <h:outputLabel for="startDate">
                     Start Date: <span style="color:red">*</span>
                 </h:outputLabel>
-                <h:inputText id="startDate" value="#{procedureController.prescription.startDate}" required="true">
+                <h:inputText id="startDate" value="#{procedureController.prescription.startDate}">
                     <f:convertDateTime pattern="yyyy-MM-dd" />
                 </h:inputText>
                 <h:message for="startDate" styleClass="error-message" />
@@ -151,7 +151,7 @@
                 <h:outputLabel for="endDate">
                     End Date: <span style="color:red">*</span>
                 </h:outputLabel>
-                <h:inputText id="endDate" value="#{procedureController.prescription.endDate}" required="true">
+                <h:inputText id="endDate" value="#{procedureController.prescription.endDate}">
                     <f:convertDateTime pattern="yyyy-MM-dd" />
                 </h:inputText>
                 <h:message for="endDate" styleClass="error-message" />

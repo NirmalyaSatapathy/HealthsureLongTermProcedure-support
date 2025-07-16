@@ -68,7 +68,7 @@
                                      action="#{procedureController.createNewProcedureLog()}"
                                      styleClass="nav-button" />
 
-                    <h:commandButton value="Done"
+                    <h:commandButton value="Submit Procedure"
                                      action="#{procedureController.procedureSubmit()}"
                                      styleClass="nav-button" />
                 </div>

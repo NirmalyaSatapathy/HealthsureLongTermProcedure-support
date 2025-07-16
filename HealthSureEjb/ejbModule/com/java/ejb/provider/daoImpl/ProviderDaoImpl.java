@@ -531,11 +531,12 @@ public class ProviderDaoImpl implements ProviderDao{
 
 	        switch (status) {
 	            case IN_PROGRESS:
-	                sql = "UPDATE medical_procedure SET procedure_status = ?, from_date = ? WHERE procedure_id = ?";
+	                sql = "UPDATE medical_procedure SET procedure_status = ?, from_date = ?,recommendations=? WHERE procedure_id = ?";
 	                ps = conn.prepareStatement(sql);
 	                ps.setString(1, status.name());
 	                ps.setDate(2, new java.sql.Date(procedure.getFromDate().getTime()));
-	                ps.setString(3, procedure.getProcedureId());
+	                ps.setString(3, procedure.getRecommendations());
+	                ps.setString(4, procedure.getProcedureId());
 	                break;
 
 	            case COMPLETED:

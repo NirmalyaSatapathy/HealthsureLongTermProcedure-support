@@ -22,7 +22,7 @@
     }
 
     h2 {
-        text-align: center;
+        text-align: center; 
         color: #00796b;
         font-size: 22px;
         margin-bottom: 20px;
@@ -120,14 +120,14 @@
             <div class="form-grid">
                 <div class="form-group">
                     <h:outputLabel for="procedureId" value="Procedure ID:" />
-                    <h:inputText id="procedureId" value="#{procedureController.selectedProcedure.procedureId}" readonly="true" />
+                    <h:inputText id="procedureId" value="#{procedureController.procedure.procedureId}" readonly="true" />
                 </div>
 
                 <div class="form-group">
                     <h:outputLabel for="appointmentId">
                         Appointment ID: <span style="color:red">*</span>
                     </h:outputLabel>
-                    <h:inputText id="appointmentId" value="#{procedureController.selectedProcedure.appointment.appointmentId}" readonly="true" />
+                    <h:inputText id="appointmentId" value="#{procedureController.procedure.appointment.appointmentId}" readonly="true" />
                     <h:message for="appointmentId" styleClass="error-message" />
                 </div>
 
@@ -135,7 +135,7 @@
                     <h:outputLabel for="recipientId">
                         Patient (h_id): <span style="color:red">*</span>
                     </h:outputLabel>
-                    <h:inputText id="recipientId" value="#{procedureController.selectedProcedure.recipient.hId}" readonly="true" />
+                    <h:inputText id="recipientId" value="#{procedureController.procedure.recipient.hId}" readonly="true" />
                     <h:message for="recipientId" styleClass="error-message" />
                 </div>
 
@@ -143,7 +143,7 @@
                     <h:outputLabel for="providerId">
                         Provider ID: <span style="color:red">*</span>
                     </h:outputLabel>
-                    <h:inputText id="providerId" value="#{procedureController.selectedProcedure.provider.providerId}" readonly="true" />
+                    <h:inputText id="providerId" value="#{procedureController.procedure.provider.providerId}" readonly="true" />
                     <h:message for="providerId" styleClass="error-message" />
                 </div>
 
@@ -151,7 +151,7 @@
                     <h:outputLabel for="doctorId">
                         Doctor ID: <span style="color:red">*</span>
                     </h:outputLabel>
-                    <h:inputText id="doctorId" value="#{procedureController.selectedProcedure.doctor.doctorId}" readonly="true" />
+                    <h:inputText id="doctorId" value="#{procedureController.procedure.doctor.doctorId}" readonly="true" />
                     <h:message for="doctorId" styleClass="error-message" />
                 </div>
 
@@ -159,7 +159,7 @@
                     <h:outputLabel for="procedureDate">
                         Procedure Start Date: <span style="color:red">*</span>
                     </h:outputLabel>
-                    <h:inputText id="fromDate" value="#{procedureController.selectedProcedure.fromDate}" readonly="true">
+                    <h:inputText id="fromDate" value="#{procedureController.procedure.fromDate}" readonly="true">
                         <f:convertDateTime pattern="yyyy-MM-dd" />
                     </h:inputText>
                     <h:message for="procedureDate" styleClass="error-message" />
@@ -169,13 +169,13 @@
                     <h:outputLabel for="diagnosis">
                         Diagnosis: <span style="color:red">*</span>
                     </h:outputLabel>
-                    <h:inputTextarea id="diagnosis" value="#{procedureController.selectedProcedure.diagnosis}" readonly="true" />
+                    <h:inputTextarea id="diagnosis" value="#{procedureController.procedure.diagnosis}" readonly="true" />
                     <h:message for="diagnosis" styleClass="error-message" />
                 </div>
 
                 <div class="form-group full-width">
                     <h:outputLabel for="recommendations" value="Recommendations:"/>
-                    <h:inputTextarea id="recommendations" value="#{procedureController.selectedProcedure.recommendations}" readonly="true"/>
+                    <h:inputTextarea id="recommendations" value="#{procedureController.procedure.recommendations}" />
                     <h:message for="recommendations" styleClass="error-message" />
                 </div>
             </div>
@@ -183,7 +183,7 @@
             <div class="button-group">
                 <h:commandButton value="Add Details"
                                  styleClass="green-button"
-                                 action="LongTermProcedureDashboard" />
+                                 action="#{procedureController.updateProcedure()}" />
             </div>
 
         </h:form>

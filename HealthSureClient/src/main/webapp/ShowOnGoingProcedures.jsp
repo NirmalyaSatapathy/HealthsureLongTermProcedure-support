@@ -111,50 +111,92 @@
         <h:dataTable value="#{procedureController.allInProgressProcedures}" var="p" styleClass="data-table">
             <h:column>
                 <f:facet name="header">
-                    <h:outputText value="Appointment ID" />
-                </f:facet>
+                        <h:commandLink action="#{procedureController.sortByInProgress('appointmentId')}">
+                            <span class="sort-header">
+                                Appointment ID
+                                <h:outputText styleClass="arrow"
+                                    value="#{procedureController.sortField eq 'appointmentId' ? (procedureController.sortAscending ? '↑' : '↓') : ''}" />
+                            </span>
+                        </h:commandLink>
+                    </f:facet>
                 <h:outputText value="#{p.appointment.appointmentId}" />
             </h:column>
 
             <h:column>
                 <f:facet name="header">
-                    <h:outputText value="Procedure ID" />
-                </f:facet>
+                        <h:commandLink action="#{procedureController.sortByInProgress('procedureId')}">
+                            <span class="sort-header">
+                                Procedure ID
+                                <h:outputText styleClass="arrow"
+                                    value="#{procedureController.sortField eq 'procedureId' ? (procedureController.sortAscending ? '↑' : '↓') : ''}" />
+                            </span>
+                        </h:commandLink>
+                    </f:facet>
                 <h:outputText value="#{p.procedureId}" />
             </h:column>
 
             <h:column>
-                <f:facet name="header">
-                    <h:outputText value="Recipient First Name" />
-                </f:facet>
+                 <f:facet name="header">
+                        <h:commandLink action="#{procedureController.sortByInProgress('recipientFirstName')}">
+                            <span class="sort-header">
+                                Recipient First Name
+                                <h:outputText styleClass="arrow"
+                                    value="#{procedureController.sortField eq 'recipientFirstName' ? (procedureController.sortAscending ? '↑' : '↓') : ''}" />
+                            </span>
+                        </h:commandLink>
+                    </f:facet>
                 <h:outputText value="#{p.recipient.firstName}" />
             </h:column>
 
             <h:column>
-                <f:facet name="header">
-                    <h:outputText value="Recipient Last Name" />
-                </f:facet>
+              <f:facet name="header">
+                        <h:commandLink action="#{procedureController.sortByInProgress('recipientLastName')}">
+                            <span class="sort-header">
+                                Recipient Last Name
+                                <h:outputText styleClass="arrow"
+                                    value="#{procedureController.sortField eq 'recipientLastName' ? (procedureController.sortAscending ? '↑' : '↓') : ''}" />
+                            </span>
+                        </h:commandLink>
+                    </f:facet>
                 <h:outputText value="#{p.recipient.lastName}" />
             </h:column>
 
             <h:column>
                 <f:facet name="header">
-                    <h:outputText value="Doctor" />
-                </f:facet>
+                        <h:commandLink action="#{procedureController.sortByInProgress('doctorName')}">
+                            <span class="sort-header">
+                                Doctor
+                                <h:outputText styleClass="arrow"
+                                    value="#{procedureController.sortField eq 'doctorName' ? (procedureController.sortAscending ? '↑' : '↓') : ''}" />
+                            </span>
+                        </h:commandLink>
+                    </f:facet>
                 <h:outputText value="#{p.doctor.doctorName}" />
             </h:column>
 
             <h:column>
                 <f:facet name="header">
-                    <h:outputText value="Provider" />
-                </f:facet>
+                        <h:commandLink action="#{procedureController.sortByInProgress('providerName')}">
+                            <span class="sort-header">
+                                Provider
+                                <h:outputText styleClass="arrow"
+                                    value="#{procedureController.sortField eq 'providerName' ? (procedureController.sortAscending ? '↑' : '↓') : ''}" />
+                            </span>
+                        </h:commandLink>
+                    </f:facet>
                 <h:outputText value="#{p.provider.name}" />
             </h:column>
 
             <h:column>
                 <f:facet name="header">
-                    <h:outputText value="Started On" />
-                </f:facet>
+                        <h:commandLink action="#{procedureController.sortByInProgress('startedOn')}">
+                            <span class="sort-header">
+                                Started on
+                                <h:outputText styleClass="arrow"
+                                    value="#{procedureController.sortField eq 'startedOn' ? (procedureController.sortAscending ? '↑' : '↓') : ''}" />
+                            </span>
+                        </h:commandLink>
+                    </f:facet>
                 <h:outputText value="#{p.fromDate}">
                     <f:convertDateTime pattern="yyyy-MM-dd" />
                 </h:outputText>

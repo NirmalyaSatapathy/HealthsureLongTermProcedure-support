@@ -103,7 +103,7 @@
             <!-- Test ID -->
             <div class="form-group">
                 <h:outputLabel for="testId" value="Test ID:" />
-                <h:inputText id="testId" value="#{procedureController.procedureTest.testId}" required="true" />
+                <h:inputText id="testId" value="#{procedureController.procedureTest.testId}"/>
                 <h:message for="testId" styleClass="error-message" />
             </div>
 
@@ -112,7 +112,7 @@
                 <h:outputLabel for="testName">
                     Test Name: <span style="color:red">*</span>
                 </h:outputLabel>
-                <h:inputText id="testName" value="#{procedureController.procedureTest.testName}" required="true" />
+                <h:inputText id="testName" value="#{procedureController.procedureTest.testName}"/>
                 <h:message for="testName" styleClass="error-message" />
             </div>
 
@@ -121,7 +121,7 @@
                 <h:outputLabel for="testDate">
                     Test Date (yyyy-MM-dd): <span style="color:red">*</span>
                 </h:outputLabel>
-                <h:inputText id="testDate" value="#{procedureController.procedureTest.testDate}" required="true">
+                <h:inputText id="testDate" value="#{procedureController.procedureTest.testDate}">
                     <f:convertDateTime pattern="yyyy-MM-dd" />
                 </h:inputText>
                 <h:message for="testDate" styleClass="error-message" />
@@ -133,7 +133,7 @@
                     Result Summary: <span style="color:red">*</span>
                 </h:outputLabel>
                 <h:inputTextarea id="resultSummary" value="#{procedureController.procedureTest.resultSummary}"
-                                 rows="4" cols="50" required="true" />
+                                 rows="4" cols="50"/>
                 <h:message for="resultSummary" styleClass="error-message" />
             </div>
 
