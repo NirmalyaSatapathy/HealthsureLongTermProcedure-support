@@ -165,7 +165,15 @@
                     </h:inputText>
                     <h:message for="scheduledDate" styleClass="error-message" />
                 </div>
-
+					<script>
+    const calendarInput = document.querySelector("#scheduledDate");
+    if (calendarInput) {
+        calendarInput.setAttribute("type", "date");
+        const today = new Date().toISOString().split("T")[0];
+        calendarInput.setAttribute("min", today);
+    }
+</script>
+				
                 <div class="form-group full-width">
                     <h:outputLabel for="diagnosis">
                         Diagnosis: <span style="color:red">*</span>

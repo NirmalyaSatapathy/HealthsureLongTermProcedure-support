@@ -163,7 +163,6 @@
                     </h:inputText>
                     <h:message for="startDate" styleClass="error-message" />
                 </div>
-
                 <div class="form-group full-width">
                     <h:outputLabel for="diagnosis">
                        <span style="color:red">*</span> Diagnosis: 

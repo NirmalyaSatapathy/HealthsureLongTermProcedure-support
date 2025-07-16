@@ -1212,9 +1212,6 @@ public class ProcedureController {
 
     public String fetchScheduledProceduresController() {
         providerDao = new ProviderDaoImpl();
-        allScheduledProcedures = null;
-        scheduledProcedures = null;
-
         if (doctorId == null || doctorId.trim().isEmpty()) {
             FacesContext.getCurrentInstance().addMessage("doctorId",
                 new FacesMessage(FacesMessage.SEVERITY_ERROR, "Doctor ID is required", null));
@@ -1245,16 +1242,21 @@ public class ProcedureController {
                         "No scheduled procedures found for Doctor ID " + doctorId, null));
             }
         }
-
+        allInProgressProcedures = null;
+        inProgressProcedures=null;
+        allScheduledProcedures=null;
+        scheduledProcedures=null;
+        currentPage=1;
+        pageSize=3;
+        sortField=null;
+        sortAscending=true;
         allScheduledProcedures = procedures;
-        currentPage = 1;
         paginate();
         return null;
     }
     public String fetchInProgressProceduresController() {
         providerDao = new ProviderDaoImpl();
-        allInProgressProcedures = null;
-
+      
         if (doctorId == null || doctorId.trim().isEmpty()) {
             FacesContext.getCurrentInstance().addMessage("doctorId",
                 new FacesMessage(FacesMessage.SEVERITY_ERROR, "Doctor ID is required", null));
@@ -1285,32 +1287,37 @@ public class ProcedureController {
                         "No in-progress procedures found for Doctor ID " + doctorId, null));
             }
         }
-
-        allInProgressProcedures = procedures;
-        paginateInProgress();
+        allInProgressProcedures = null;
+        inProgressProcedures=null;
+        allScheduledProcedures=null;
+        scheduledProcedures=null;
         currentPage=1;
+        pageSize=3;
+        sortField=null;
+        sortAscending=true;
+        totalPages=0;
+        allInProgressProcedures = procedures;
+        paginate();
         return null;
-    }
-    public void paginateInProgress() {
-        if (allInProgressProcedures == null) return;
-
-        int total = allInProgressProcedures.size();
-        totalPages = (int) Math.ceil((double) total / pageSize);
-        int fromIndex = (currentPage - 1) * pageSize;
-        int toIndex = Math.min(fromIndex + pageSize, total);
-
-        inProgressProcedures = allInProgressProcedures.subList(fromIndex, toIndex);
     }
     //Paginations
     public void paginate() {
-        if (allScheduledProcedures == null) return;
-
+       if(allScheduledProcedures!=null)
+       {
         int total = allScheduledProcedures.size();
         totalPages = (int) Math.ceil((double) total / pageSize);
         int fromIndex = (currentPage - 1) * pageSize;
         int toIndex = Math.min(fromIndex + pageSize, total);
-
         scheduledProcedures = allScheduledProcedures.subList(fromIndex, toIndex);
+       }
+       if(allInProgressProcedures!=null)
+       {
+        int total = allInProgressProcedures.size();
+        totalPages = (int) Math.ceil((double) total / pageSize);
+        int fromIndex = (currentPage - 1) * pageSize;
+        int toIndex = Math.min(fromIndex + pageSize, total);
+        inProgressProcedures = allInProgressProcedures.subList(fromIndex, toIndex);
+       }
     }
     public void nextPage() {
         if (currentPage < totalPages) {
@@ -1382,6 +1389,8 @@ public class ProcedureController {
                     comparator = comparator.reversed();
                 }
                 allInProgressProcedures.sort(comparator);
+                currentPage = 1;
+                paginate();
             }
         }
         // Comparator mapping for each field
@@ -1495,8 +1504,28 @@ public class ProcedureController {
 	    	}
 	        // Save prescriptions
 	        for (Prescription p : prescriptions) {
-	          // assuming there's a `procedure` field in Prescription
-	            providerEjb.addPrescription(p);
+	          boolean flag=false;
+	          for(PrescribedMedicines pm:prescribedMedicines)
+	          {
+	        	  if(pm.getPrescription().getPrescriptionId().equals(p.getPrescriptionId()))
+	        	  {
+	        		  flag=true;
+	        		  break;
+	        	  }
+	          }
+	          for(ProcedureTest pt:procedureTests)
+	          {
+	        	  if(pt.getPrescription().getPrescriptionId().equals(p.getPrescriptionId()))
+	        	  {
+	        		  flag=true;
+	        		  break;
+	        	  }
+	          }
+	          if(flag==true)
+	          {
+	        	  providerEjb.addPrescription(p);
+	          }
+	          
 	        }
 
 	        // Save prescribed medicines

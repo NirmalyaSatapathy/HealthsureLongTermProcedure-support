@@ -103,7 +103,7 @@
             <!-- Test ID -->
             <div class="form-group">
                 <h:outputLabel for="testId" value="Test ID:" />
-                <h:inputText id="testId" value="#{procedureController.procedureTest.testId}"/>
+                <h:inputText id="testId" value="#{procedureController.procedureTest.testId}" readonly="true"/>
                 <h:message for="testId" styleClass="error-message" />
             </div>
 
@@ -126,7 +126,14 @@
                 </h:inputText>
                 <h:message for="testDate" styleClass="error-message" />
             </div>
-
+<script>
+    const calendarInput = document.querySelector("#scheduledDate");
+    if (calendarInput) {
+        calendarInput.setAttribute("type", "date");
+        const today = new Date().toISOString().split("T")[0];
+        calendarInput.setAttribute("min", today);
+    }
+</script>
             <!-- Result Summary -->
             <div class="form-group">
                 <h:outputLabel for="resultSummary">

@@ -140,7 +140,14 @@
                 </h:inputText>
                 <h:message for="startDate" styleClass="error"/>
             </div>
-
+			<script>
+    const calendarInput = document.querySelector("#startDate");
+    if (calendarInput) {
+        calendarInput.setAttribute("type", "date");
+        const today = new Date().toISOString().split("T")[0];
+        calendarInput.setAttribute("min", today);
+    }
+</script>
             <div class="form-group">
                 <label for="endDate">End Date <span style="color:red">*</span></label>
                 <h:inputText id="endDate" value="#{procedureController.prescribedMedicine.endDate}" 
@@ -149,7 +156,14 @@
                 </h:inputText>
                 <h:message for="endDate" styleClass="error"/>
             </div>
-
+<script>
+    const calendarInput1 = document.querySelector("#endDate");
+    if (calendarInput1) {
+        calendarInput1.setAttribute("type", "date");
+        const today = new Date().toISOString().split("T")[0];
+        calendarInput1.setAttribute("min", today);
+    }
+</script>
             <div class="form-group">
                 <label for="notes">Notes</label>
                 <h:inputTextarea id="notes" value="#{procedureController.prescribedMedicine.notes}" 

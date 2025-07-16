@@ -113,7 +113,14 @@
                 </h:inputText>
                 <h:message for="logDate" styleClass="error-message" />
             </div>
-
+				<script>
+    const calendarInput = document.querySelector("#logDate");
+    if (calendarInput) {
+        calendarInput.setAttribute("type", "date");
+        const today = new Date().toISOString().split("T")[0];
+        calendarInput.setAttribute("min", today);
+    }
+</script>
             <!-- Vitals -->
             <div class="form-group">
                 <h:outputLabel for="vitals">Vitals (optional):</h:outputLabel>

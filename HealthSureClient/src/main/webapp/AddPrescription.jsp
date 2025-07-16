@@ -39,6 +39,13 @@
             flex-direction: column;
         }
 
+        .calendar-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px 30px;
+            margin-top: 20px;
+        }
+
         label {
             font-weight: 600;
             color: #2c3e50;
@@ -48,6 +55,15 @@
 
         input[type="text"] {
             padding: 8px 10px;
+            font-size: 13px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        input[type="date"] {
+            padding: 6px 8px;
             font-size: 13px;
             border: 1px solid #ccc;
             border-radius: 6px;
@@ -126,17 +142,27 @@
                 </div>
             </div>
 
+            <div class="calendar-row">
+               <h:panelGroup  rendered="#{procedureController.procedure.type ne 'SINGLE_DAY'}">
             <div class="form-group" style="grid-column: span 2;">
-                <h:outputLabel for="writtenOn" rendered="#{procedureController.procedure.type ne 'SINGLE_DAY'}">
+                <h:outputLabel for="writtenOn">
                     Written On (Date): <span style="color:red">*</span>
                 </h:outputLabel>
-                <h:inputText id="writtenOn" value="#{procedureController.prescription.writtenOn}" rendered="#{procedureController.procedure.type ne 'SINGLE_DAY'}"
+                <h:inputText id="writtenOn" value="#{procedureController.prescription.writtenOn}"
                              >
                     <f:convertDateTime pattern="yyyy-MM-dd" />
                 </h:inputText>
                 <h:message for="writtenOn" styleClass="error-message" />
             </div>
-
+<script>
+    const calendarInput3 = document.querySelector("#writtenOn");
+    if (calendarInput3) {
+        calendarInput3.setAttribute("type", "date");
+        const today = new Date().toISOString().split("T")[0];
+        calendarInput3.setAttribute("min", today);
+    }
+</script>
+</h:panelGroup>
             <div class="form-group" style="grid-column: span 2;">
                 <h:outputLabel for="startDate">
                     Start Date: <span style="color:red">*</span>
@@ -146,7 +172,14 @@
                 </h:inputText>
                 <h:message for="startDate" styleClass="error-message" />
             </div>
-
+			<script>
+    const calendarInput = document.querySelector("#startDate");
+    if (calendarInput) {
+        calendarInput.setAttribute("type", "date");
+        const today = new Date().toISOString().split("T")[0];
+        calendarInput.setAttribute("min", today);
+    }
+</script>
             <div class="form-group" style="grid-column: span 2;">
                 <h:outputLabel for="endDate">
                     End Date: <span style="color:red">*</span>
@@ -156,18 +189,26 @@
                 </h:inputText>
                 <h:message for="endDate" styleClass="error-message" />
             </div>
-
+<script>
+    const calendarInput1 = document.querySelector("#endDate");
+    if (calendarInput1) {
+        calendarInput1.setAttribute("type", "date");
+        const today = new Date().toISOString().split("T")[0];
+        calendarInput1.setAttribute("min", today);
+    }
+</script>
+</div>
            <div class="button-group">
     <h:commandButton value="Save Prescription"
                      styleClass="custom-button"
                      action="#{procedureController.addPrescriptionController(procedureController.prescription)}" />
-
+ 
     <h:commandButton value="Reset Form"
                      styleClass="custom-button blue-button"
                      action="#{procedureController.createNewPrescription()}"
                      immediate="true" />
 </div>
-
+ 
         </h:form>
     </div>
 </f:view>

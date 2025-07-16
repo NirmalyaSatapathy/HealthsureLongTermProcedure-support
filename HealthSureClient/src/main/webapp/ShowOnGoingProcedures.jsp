@@ -1,7 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@taglib prefix="f" uri="http://java.sun.com/jsf/core"%>
 <%@taglib prefix="h" uri="http://java.sun.com/jsf/html"%>
-
 <f:view>
 <html>
 <head>
@@ -105,10 +104,10 @@
             <h:commandButton value="Go to Dashboard" action="#{procedureController.goToDashboard2()}"/>
         </div>
 
-    <h:panelGroup rendered="#{not empty procedureController.allInProgressProcedures}">
+    <h:panelGroup rendered="#{not empty procedureController.inProgressProcedures}">
         <h:outputText value="Total: #{procedureController.allInProgressProcedures.size()} procedures" style="font-weight: bold;" />
 
-        <h:dataTable value="#{procedureController.allInProgressProcedures}" var="p" styleClass="data-table">
+        <h:dataTable value="#{procedureController.inProgressProcedures}" var="p" styleClass="data-table">
             <h:column>
                 <f:facet name="header">
                         <h:commandLink action="#{procedureController.sortByInProgress('appointmentId')}">
@@ -216,6 +215,27 @@
                 <h:commandButton value="Completed" action="#{procedureController.completeProcedure(p)}" />
             </h:column>
         </h:dataTable>
+        <br/>
+
+<h:panelGrid columns="5" cellpadding="10">
+
+    <h:commandButton value="First" action="#{procedureController.goToFirstPage()}" 
+                     disabled="#{!procedureController.hasPreviousPage()}" />
+
+    <h:commandButton value="Previous" action="#{procedureController.previousPage()}" 
+                     disabled="#{!procedureController.hasPreviousPage()}" />
+
+    <h:outputText value="Page #{procedureController.currentPage} of #{procedureController.totalPages}" 
+                  style="font-weight: bold;" />
+
+    <h:commandButton value="Next" action="#{procedureController.nextPage()}" 
+                     disabled="#{!procedureController.hasNextPage()}" />
+
+    <h:commandButton value="Last" action="#{procedureController.goToLastPage()}" 
+                     disabled="#{!procedureController.hasNextPage()}" />
+
+</h:panelGrid>
+        
     </h:panelGroup>
 </h:form>
 
