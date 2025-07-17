@@ -242,7 +242,7 @@ public class ProcedureController {
             context.validationFailed();
             isValid = false;
         }
-        if(! medicalProcedure.getRecipient().gethId().matches("^H\\d{3}$")) {
+        if (!medicalProcedure.getRecipient().gethId().matches("^[Hh]\\d{3}$")) {
             context.addMessage("recipientId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Invalid Patient", "Correct HealthId format is HXXX"));
             context.validationFailed();
@@ -254,7 +254,7 @@ public class ProcedureController {
             context.validationFailed();
             isValid = false;
         }
-        if (!medicalProcedure.getProvider().getProviderId().matches("^PROV\\d{3}$")) {
+        if (!medicalProcedure.getProvider().getProviderId().matches("^[Pp][Rr][Oo][Vv]\\d{3}$")) {
             context.addMessage("providerId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Invalid Provider", "Correct ProviderId format is PROVXXX"));
             context.validationFailed();
@@ -266,7 +266,7 @@ public class ProcedureController {
             context.validationFailed();
             isValid = false;
         }
-        if (!medicalProcedure.getDoctor().getDoctorId().matches("^DOC\\d{3}$")) {
+        if (!medicalProcedure.getDoctor().getDoctorId().matches("^[Dd][Oo][Cc]\\d{3}$")){
             context.addMessage("doctorId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Invalid Doctor", "Correct DoctorId format is DOCXXX"));
             context.validationFailed();
@@ -278,7 +278,7 @@ public class ProcedureController {
             context.validationFailed();
             isValid = false;
         }
-        if (!medicalProcedure.getAppointment().getAppointmentId().matches("^APP\\d{3}$")) {
+        if (!medicalProcedure.getAppointment().getAppointmentId().matches("^[Aa][Pp][Pp]\\d{3}$")){
             context.addMessage("appointmentId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Invalid Appointment", "Correct AppointmentID format is APPXXX"));
             context.validationFailed();
@@ -386,7 +386,8 @@ public class ProcedureController {
             context.validationFailed();
             isValid = false;
         }
-        if(! medicalProcedure.getRecipient().gethId().matches("^H\\d{3}$")) {
+        if (!medicalProcedure.getRecipient().gethId().matches("^[Hh]\\d{3}$")) 
+ {
             context.addMessage("recipientId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Invalid Patient", "Correct HealthId format is HXXX"));
             context.validationFailed();
@@ -398,7 +399,8 @@ public class ProcedureController {
             context.validationFailed();
             isValid = false;
         }
-        if (!medicalProcedure.getProvider().getProviderId().matches("^PROV\\d{3}$")) {
+        if (!medicalProcedure.getProvider().getProviderId().matches("^[Pp][Rr][Oo][Vv]\\d{3}$"))
+ {
             context.addMessage("providerId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Invalid Provider", "Correct ProviderId format is PROVXXX"));
             context.validationFailed();
@@ -410,7 +412,7 @@ public class ProcedureController {
             context.validationFailed();
             isValid = false;
         }
-        if (!medicalProcedure.getDoctor().getDoctorId().matches("^DOC\\d{3}$")) {
+        if (!medicalProcedure.getDoctor().getDoctorId().matches("^[Dd][Oo][Cc]\\d{3}$")) {
             context.addMessage("doctorId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Invalid Doctor", "Correct DoctorId format is DOCXXX"));
             context.validationFailed();
@@ -422,7 +424,7 @@ public class ProcedureController {
             context.validationFailed();
             isValid = false;
         }
-        if (!medicalProcedure.getAppointment().getAppointmentId().matches("^APP\\d{3}$")) {
+        if (!medicalProcedure.getAppointment().getAppointmentId().matches("^[Aa][Pp][Pp]\\d{3}$")) {
             context.addMessage("appointmentId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Invalid Appointment", "Correct AppointmentID format is APPXXX"));
             context.validationFailed();
@@ -543,7 +545,7 @@ public class ProcedureController {
             context.validationFailed();
             isValid = false;
         }
-        if(! medicalProcedure.getRecipient().gethId().matches("^H\\d{3}$")) {
+        if (!medicalProcedure.getRecipient().gethId().matches("^[Hh]\\d{3}$")){
             context.addMessage("recipientId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Invalid Patient", "Correct HealthId format is HXXX"));
             context.validationFailed();
@@ -555,7 +557,8 @@ public class ProcedureController {
             context.validationFailed();
             isValid = false;
         }
-        if (!medicalProcedure.getProvider().getProviderId().matches("^PROV\\d{3}$")) {
+        if (!medicalProcedure.getProvider().getProviderId().matches("^[Pp][Rr][Oo][Vv]\\d{3}$"))
+ {
             context.addMessage("providerId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Invalid Provider", "Correct ProviderId format is PROVXXX"));
             context.validationFailed();
@@ -567,7 +570,7 @@ public class ProcedureController {
             context.validationFailed();
             isValid = false;
         }
-        if (!medicalProcedure.getDoctor().getDoctorId().matches("^DOC\\d{3}$")) {
+        if (!medicalProcedure.getDoctor().getDoctorId().matches("^[Dd][Oo][Cc]\\d{3}$")) {
             context.addMessage("doctorId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Invalid Doctor", "Correct DoctorId format is DOCXXX"));
             context.validationFailed();
@@ -579,7 +582,7 @@ public class ProcedureController {
             context.validationFailed();
             isValid = false;
         }
-        if (!medicalProcedure.getAppointment().getAppointmentId().matches("^APP\\d{3}$")) {
+        if (!medicalProcedure.getAppointment().getAppointmentId().matches("^[Aa][Pp][Pp]\\d{3}$")) {
             context.addMessage("appointmentId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
                     "Invalid Appointment", "Correct AppointmentID format is APPXXX"));
             context.validationFailed();
@@ -914,6 +917,7 @@ public class ProcedureController {
     }
 
     public String addPrescriptionController(Prescription prescription) throws ClassNotFoundException, SQLException {
+    	
     	 prescriptions.removeIf(p -> p.getPrescriptionId().equals(prescription.getPrescriptionId()));
     	 FacesContext context = FacesContext.getCurrentInstance();
     	 boolean isValid = true;
@@ -946,7 +950,7 @@ public class ProcedureController {
             isValid = false;
         }
         if (!isValid) return null;
-        // ✅ Fetch procedure details
+        //  Fetch procedure details
         ProcedureType procedureType = procedure.getType();
         ProcedureStatus procedureStatus = procedure.getProcedureStatus();
 
@@ -960,7 +964,7 @@ public class ProcedureController {
             isValid = false;
         }
 
-        // ✅ SINGLE_DAY: writtenOn must be equal to procedureDate
+        //  SINGLE_DAY: writtenOn must be equal to procedureDate
         if (procedureType == ProcedureType.SINGLE_DAY) {
             prescription.setWrittenOn(procedureDate);
             // Validate prescription start and end dates
@@ -1214,7 +1218,13 @@ public class ProcedureController {
         providerDao = new ProviderDaoImpl();
         if (doctorId == null || doctorId.trim().isEmpty()) {
             FacesContext.getCurrentInstance().addMessage("doctorId",
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Doctor ID is required", null));
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Enter doctor id DOCXXX", null));
+            return null;
+        }
+
+        if (!doctorId.matches("^[Dd][Oo][Cc]\\d{3}$")) {
+            FacesContext.getCurrentInstance().addMessage("doctorId",
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Correct doctor id format DOCXXX", null));
             return null;
         }
 
@@ -1227,6 +1237,11 @@ public class ProcedureController {
 
         List<MedicalProcedure> procedures;
         if (procedureId != null && !procedureId.trim().isEmpty()) {
+        	   if (!procedureId.matches("^[Pp][Rr][Oo][Vv].{3}$")) {
+                   FacesContext.getCurrentInstance().addMessage("procedureId",
+                       new FacesMessage(FacesMessage.SEVERITY_ERROR, "Correct procedure id format PROCXXX", null));
+                   return null;
+               }
             procedures = providerEjb.getScheduledProceduresByDoctor(doctorId, procedureId);
             if (procedures.isEmpty()) {
                 FacesContext.getCurrentInstance().addMessage("procedureId",
@@ -1259,10 +1274,15 @@ public class ProcedureController {
       
         if (doctorId == null || doctorId.trim().isEmpty()) {
             FacesContext.getCurrentInstance().addMessage("doctorId",
-                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Doctor ID is required", null));
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Enter doctor id DOCXXX", null));
             return null;
         }
 
+        if (!doctorId.matches("^[Dd][Oo][Cc]\\d{3}$")) {
+            FacesContext.getCurrentInstance().addMessage("doctorId",
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Correct doctor id format DOCXXX", null));
+            return null;
+        }
         Doctor doctor = providerDao.searchDoctorById(doctorId);
         if (doctor == null) {
             FacesContext.getCurrentInstance().addMessage("doctorId",
@@ -1272,6 +1292,11 @@ public class ProcedureController {
 
         List<MedicalProcedure> procedures;
         if (procedureId != null && !procedureId.trim().isEmpty()) {
+        	 if (!procedureId.matches("^[Pp][Rr][Oo][Vv].{3}$")) {
+                 FacesContext.getCurrentInstance().addMessage("procedureId",
+                     new FacesMessage(FacesMessage.SEVERITY_ERROR, "Correct procedure id format PROCXXX", null));
+                 return null;
+             }
             procedures = providerEjb.getInProgressProceduresByDoctor(doctorId, procedureId);
             if (procedures.isEmpty()) {
                 FacesContext.getCurrentInstance().addMessage("procedureId",
@@ -1450,6 +1475,7 @@ public class ProcedureController {
             this.procedureId = null;
             this.sortField = null;
             this.sortAscending = true;
+            this.inProgressProcedures=null;
             this.allInProgressProcedures = null; // Clear previous search results if needed
             FacesContext.getCurrentInstance().getViewRoot().getChildren().clear();
             return null; // Return the same page name for reload
@@ -1489,6 +1515,7 @@ public class ProcedureController {
             this.procedureId = null;
             this.sortField = null;
             this.sortAscending = true;
+            this.inProgressProcedures=null;
             this.allInProgressProcedures = null; // Clear previous search results if needed
             FacesContext.getCurrentInstance().getViewRoot().getChildren().clear();
             return "ProviderDashboard?faces-redirect=true";

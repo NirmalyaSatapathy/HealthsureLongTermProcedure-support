@@ -386,11 +386,16 @@ public class InsuranceController {
         showInsuranceFlag = false;
 
         if (doctorId == null || doctorId.trim().isEmpty()) {
-            context.addMessage("doctorId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Doctor ID is required.", null));
+            FacesContext.getCurrentInstance().addMessage("doctorId",
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Enter doctor id DOCXXX", null));
             return null;
         }
 
+        if (!doctorId.matches("^[Dd][Oo][Cc]\\d{3}$")) {
+            FacesContext.getCurrentInstance().addMessage("doctorId",
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Correct doctor id format DOCXXX", null));
+            return null;
+        }
         Doctor doctor = providerDao.searchDoctorById(doctorId);
         if (doctor == null) {
             context.addMessage("doctorId", new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -400,6 +405,12 @@ public class InsuranceController {
 
         if (healthId != null && !healthId.trim().isEmpty()) {
             cameFromPatientSearch = false;
+
+            if (!healthId.matches("^[Hh]\\d{3}$")) {
+                FacesContext.getCurrentInstance().addMessage("recipientId",
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Correct Patient id format HXXX", null));
+                return null;
+            }
             Recipient recipient = providerDao.searchRecipientByHealthId(healthId);
             if (recipient == null) {
                 context.addMessage("recipientId", new FacesMessage(FacesMessage.SEVERITY_ERROR,

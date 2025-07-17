@@ -158,8 +158,6 @@
     const calendarInput3 = document.querySelector("#writtenOn");
     if (calendarInput3) {
         calendarInput3.setAttribute("type", "date");
-        const today = new Date().toISOString().split("T")[0];
-        calendarInput3.setAttribute("min", today);
     }
 </script>
 </h:panelGroup>
@@ -176,8 +174,6 @@
     const calendarInput = document.querySelector("#startDate");
     if (calendarInput) {
         calendarInput.setAttribute("type", "date");
-        const today = new Date().toISOString().split("T")[0];
-        calendarInput.setAttribute("min", today);
     }
 </script>
             <div class="form-group" style="grid-column: span 2;">
@@ -193,8 +189,6 @@
     const calendarInput1 = document.querySelector("#endDate");
     if (calendarInput1) {
         calendarInput1.setAttribute("type", "date");
-        const today = new Date().toISOString().split("T")[0];
-        calendarInput1.setAttribute("min", today);
     }
 </script>
 </div>

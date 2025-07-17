@@ -127,11 +127,9 @@
                 <h:message for="testDate" styleClass="error-message" />
             </div>
 <script>
-    const calendarInput = document.querySelector("#scheduledDate");
+    const calendarInput = document.querySelector("#testDate");
     if (calendarInput) {
         calendarInput.setAttribute("type", "date");
-        const today = new Date().toISOString().split("T")[0];
-        calendarInput.setAttribute("min", today);
     }
 </script>
             <!-- Result Summary -->
