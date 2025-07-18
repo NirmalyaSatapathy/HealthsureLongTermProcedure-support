@@ -402,7 +402,13 @@ public class InsuranceController {
                     "Doctor with ID " + doctorId + " does not exist.", null));
             return null;
         }
-
+        	if (matchType != null) {
+        	    if (patientName == null || patientName.trim().isEmpty()) {
+        	        FacesContext.getCurrentInstance().addMessage("matchType",
+        	            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Enter patient name to search", null));
+        	        return null;
+        	    }
+        	}
         if (healthId != null && !healthId.trim().isEmpty()) {
             cameFromPatientSearch = false;
 
@@ -676,7 +682,38 @@ public class InsuranceController {
         FacesContext.getCurrentInstance().getViewRoot().getChildren().clear();
         return "insuranceDetails?faces-redirect=true";
     }
+    public String goToDashboard()
+    {
+        this.doctorId = null;
+        this.healthId = null;
+        this.patientName = null;
+        this.matchType = null;
 
+        // Clear results and flags
+        this.patientInsuranceList = null;
+        this.associatedPatients = null;
+        this.subscribedMembers = null;
+        this.showPatientsFlag = false;
+        this.showInsuranceFlag = false;
+        this.cameFromPatientSearch = false;
+        this.topMessage = null;
+
+        // Reset pagination
+        this.insuranceFirst = 0;
+        this.patientFirst = 0;
+        this.memberFirst = 0;
+
+        // Clear sorting
+        this.sortField = null;
+        this.ascending = true;
+
+        // Clear selected info
+        this.selectedItem = null;
+        this.selectedPatientId = null;
+        // Redirect to same page (force reload)
+        FacesContext.getCurrentInstance().getViewRoot().getChildren().clear();
+        return "ProviderDashboard?faces-redirect=true";
+    }
 
 
 

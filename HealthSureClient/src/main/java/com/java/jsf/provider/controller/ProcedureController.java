@@ -828,19 +828,23 @@ public class ProcedureController {
    
         MedicineType type = prescribedMedicine.getType();
         String pattern="";
-
+        String format="";
         switch (type) {
             case TABLET:
                 pattern = "^\\d+\\s*tablet(s)?$";
+                format="tablets";
                 break;
             case SYRUP:
                 pattern = "^\\d+(\\.\\d+)?\\s*ml$";
+                format="ml";
                 break;
             case INJECTION:
                 pattern = "^(\\d+(\\.\\d+)?\\s*ml|\\d+\\s*dose(s)?)$";
+                format="ml/dose";
                 break;
             case DROP:
                 pattern = "^\\d+\\s*drop(s)?$";
+                format="drops";
                 break;
             default:
                 context.addMessage("type", new FacesMessage(FacesMessage.SEVERITY_ERROR,
@@ -851,7 +855,7 @@ public class ProcedureController {
 
         if (!dosage.trim().toLowerCase().matches(pattern)) {
             context.addMessage("dosage", new FacesMessage(FacesMessage.SEVERITY_ERROR,
-                    "Dosage format is invalid for type: " + type, null));
+                    "Dosage format is invalid for " + type+" type:"+format, null));
             context.validationFailed();
             isValid = false;
         }
@@ -1268,7 +1272,7 @@ public class ProcedureController {
 
         List<MedicalProcedure> procedures;
         if (procedureId != null && !procedureId.trim().isEmpty()) {
-        	   if (!procedureId.matches("^[Pp][Rr][Oo][Vv].{3}$")) {
+        	   if (!procedureId.matches("^[Pp][Rr][Oo][Cc].{3}$")) {
                    FacesContext.getCurrentInstance().addMessage("procedureId",
                        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Correct procedure id format PROCXXX", null));
                    return null;
@@ -1323,7 +1327,7 @@ public class ProcedureController {
 
         List<MedicalProcedure> procedures;
         if (procedureId != null && !procedureId.trim().isEmpty()) {
-        	 if (!procedureId.matches("^[Pp][Rr][Oo][Vv].{3}$")) {
+        	 if (!procedureId.matches("^[Pp][Rr][Oo][Cc].{3}$")) {
                  FacesContext.getCurrentInstance().addMessage("procedureId",
                      new FacesMessage(FacesMessage.SEVERITY_ERROR, "Correct procedure id format PROCXXX", null));
                  return null;

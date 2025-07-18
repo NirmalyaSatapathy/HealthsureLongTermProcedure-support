@@ -87,7 +87,10 @@
         <!-- Submit Button -->
         <h:outputLabel />
         <h:commandButton value="Search" action="#{insuranceController.handleSearch()}" />
- <h:commandButton value="Reset" action="#{insuranceController.resetPage()}" immediate="true" />
+        <h:commandButton value="Reset" action="#{insuranceController.resetPage()}" immediate="true" />
+        <h:commandButton value="Go to Dashboard" action="#{insuranceController.goToDashboard()}"/>
+ 
+
     </h:panelGrid>
 </h:form>
 <!-- TOP MESSAGE -->
