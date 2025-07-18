@@ -704,7 +704,17 @@ public class ProcedureController {
         }
         testName = testName.trim().replaceAll("\\s+", " ");
         procedureTest.setTestName(testName);
-
+        for (ProcedureTest existingTest : procedureTests) {
+            if (existingTest.getPrescription() != null &&
+            	existingTest.getPrescription().getPrescriptionId().equals(prescription.getPrescriptionId()) &&
+            	existingTest.getTestName() != null &&
+            	existingTest.getTestName().equalsIgnoreCase(testName)) {
+                context.addMessage("testName", new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                        "This Test is already prescribed in this prescription.", null));
+                context.validationFailed();
+                isValid = false;
+            }
+        }
      // 2. Validate Test Date
         Date testDate = procedureTest.getTestDate();
 
@@ -986,6 +996,7 @@ public class ProcedureController {
                 context.validationFailed();
                 isValid = false;
             }
+           
         }
 
         System.out.println(fromDate);
@@ -1032,7 +1043,27 @@ public class ProcedureController {
                 isValid = false;
             }
         }
-
+        if (prescribedMedicines != null && !prescribedMedicines.isEmpty()) {
+            for (PrescribedMedicines pm : prescribedMedicines) {
+            	if(pm.getPrescription().getPrescriptionId().equals(prescription.getPrescriptionId()))
+            	{
+                if (pm.getStartDate().before(prescription.getStartDate())) {
+                	 context.addMessage("startDate", new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                			 "Prescription start date" +prescription.getStartDate() + " is after medicine start date " +pm.getStartDate()+" for "+pm.getMedicineName() ,null));
+                     context.validationFailed();
+                    isValid = false;
+                    break;
+                }
+                if (pm.getEndDate().after(prescription.getEndDate())) {
+                	 context.addMessage("endDate", new FacesMessage(FacesMessage.SEVERITY_ERROR,
+                			 "Prescription end date " +prescription.getEndDate()+ " is before Medicine end date " + pm.getEndDate() +" for "+pm.getMedicineName() ,null));
+                     context.validationFailed();
+                    isValid = false;
+                    break;
+                }
+            	}
+            }
+        }
        
         if (!isValid) return null;
         // Save the actual validated values back (optional but good for consistency)

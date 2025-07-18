@@ -58,8 +58,6 @@
     <f:view>
         <div class="dashboard-container">
             <div class="dashboard-title">Prescription Dashboard</div>
-             <h:outputText value="⚠ Once you click 'Add for a new entry', the previous entry cannot be edited." 
-                  style="display:block; color:#d9534f; font-weight:bold; font-size:15px; margin-bottom:20px;" />
             <h:form>
             	
                 <h:commandButton value="Add Medicine" action="#{procedureController.createNewPrescribedMedicine()}" />
